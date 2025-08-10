@@ -1,0 +1,105 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+static/
+# If you collect static files locally, ignore collected static:
+# Otherwise, remove this if you commit static files
+
+# If you have migrations but want to ignore them (not recommended)
+# migrations/
+# Or ignore all except __init__.py inside migrations folder:
+# !*/migrations/__init__.py
+
+# Pyenv
+.python-version
+
+# Env files and virtualenv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+*.env
+
+
+# VSCode settings
+.vscode/
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Celery beat schedule file
+celerybeat-schedule
+
+# Coverage reports
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+
+# pytest cache
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# Profiling data
+.prof
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pipenv
+Pipfile.lock
+
+# pyenv
+.python-version
+
+# pytype
+.pytype/
+
+# Django secret key file or other secrets (optional)
+# secrets.json
+

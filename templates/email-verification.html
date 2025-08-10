@@ -3,9 +3,412 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Verify Your Email - Dentist Portfolio & Clinic Management System</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c7be5 0%, #1e4db7 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Main content */
+        .content {
+            padding: 40px 30px;
+        }
+
+        .verification-title {
+            font-size: 24px;
+            color: #2c7be5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .verification-message {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        /* Verification section */
+        .verification-section {
+            background-color: #f8f9fa;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 8px;
+            border-left: 4px solid #2c7be5;
+            text-align: center;
+        }
+
+        .verification-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .verification-subtitle {
+            font-size: 18px;
+            color: #2c7be5;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .verification-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* CTA Button */
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #2c7be5 0%, #1e4db7 100%);
+            color: white;
+            text-decoration: none;
+            padding: 18px 40px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(44, 123, 229, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Security section */
+        .security-section {
+            background-color: #e8f4fd;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .security-title {
+            font-size: 16px;
+            color: #2c7be5;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .security-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .security-text {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Warning section */
+        .warning-section {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .warning-title {
+            font-size: 16px;
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .warning-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .warning-text {
+            font-size: 14px;
+            color: #856404;
+        }
+
+        /* Benefits section */
+        .benefits-section {
+            background-color: #f8f9fa;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .benefits-title {
+            font-size: 18px;
+            color: #2c7be5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .benefit-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #2c7be5;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .benefit-text {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            margin: 20px 0;
+        }
+
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .contact-info {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        .unsubscribe {
+            font-size: 12px;
+            opacity: 0.6;
+            margin-top: 20px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .header, .content, .footer {
+                padding: 20px 15px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .verification-title {
+                font-size: 20px;
+            }
+
+            .verification-section, .security-section, .warning-section, .benefits-section {
+                padding: 20px;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-button {
+                padding: 15px 30px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">Dentist</div>
+            <div class="tagline">Professional Dental Portfolio & Clinic Management</div>
+        </div>
 
+        <!-- Main Content -->
+        <div class="content">
+            <h1 class="verification-title">Verify Your Email Address ✉️</h1>
+
+            <p class="verification-message">
+                Dear <strong>{{ user.first_name|default:"Valued User" }}</strong>,
+            </p>
+
+            <p class="verification-message">
+                Welcome to DentistPro! To complete your registration and start using our platform,
+                please verify your email address by clicking the button below.
+            </p>
+
+            <!-- Verification Section -->
+            <div class="verification-section">
+                <div class="verification-icon">📧</div>
+                <div class="verification-subtitle">Email Verification Required</div>
+                <div class="verification-description">
+                    This step helps us ensure the security of your account and allows us to send you
+                    important updates about your dental practice.
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <a href="{{ verification_url|default:'#' }}" class="cta-button">
+                    Verify My Email Address →
+                </a>
+            </div>
+
+            <!-- Security Section -->
+            <div class="security-section">
+                <h4 class="security-title">
+                    <span class="security-icon">🔒</span>
+                    Why Email Verification?
+                </h4>
+                <p class="security-text">
+                    • Protects your account from unauthorized access<br>
+                    • Ensures we can reach you with important updates<br>
+                    • Required for password recovery and security alerts<br>
+                    • Helps maintain the integrity of our platform
+                </p>
+            </div>
+
+            <!-- Benefits Section -->
+            <div class="benefits-section">
+                <h3 class="benefits-title">What You'll Get After Verification</h3>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">📋</div>
+                        <div class="benefit-text">Full Portfolio Access</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🏥</div>
+                        <div class="benefit-text">Clinic Management</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">📅</div>
+                        <div class="benefit-text">Appointment Scheduling</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">💻</div>
+                        <div class="benefit-text">Telemedicine Features</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">📊</div>
+                        <div class="benefit-text">Patient Records</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🤖</div>
+                        <div class="benefit-text">AI-Powered Insights</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Warning Section -->
+            <div class="warning-section">
+                <h4 class="warning-title">
+                    <span class="warning-icon">⚠️</span>
+                    Important Information
+                </h4>
+                <p class="warning-text">
+                    • This verification link will expire in {{ expiry_hours|default:"24" }} hours<br>
+                    • If you didn't create an account, please ignore this email<br>
+                    • For security reasons, please verify from the same device you used to register<br>
+                    • If the button doesn't work, copy and paste this link: <a href="{{ verification_url|default:'#' }}" style="color: #856404; word-break: break-all;">{{ verification_url|default:"https://example.com/verify" }}</a>
+                </p>
+            </div>
+
+            <p class="verification-message">
+                <strong>Need Help?</strong><br>
+                If you're having trouble verifying your email or have any questions,
+                please contact our support team at <a href="mailto:support@dentistpro.com" style="color: #2c7be5;">support@dentistpro.com</a>.
+            </p>
+
+            <p class="verification-message">
+                We're excited to have you join our community of dental professionals!<br>
+                <strong>The DentistPro Team</strong>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-title">DentistPro</div>
+            <div class="social-links">
+                <a href="#" class="social-link">Website</a>
+                <a href="#" class="social-link">Support</a>
+                <a href="#" class="social-link">Documentation</a>
+            </div>
+            <div class="contact-info">
+                <p>📧 support@dentistpro.com</p>
+                <p>📞 +1 (555) 123-4567</p>
+                <p>📍 123 Healthcare Ave, Medical District</p>
+            </div>
+            <div class="unsubscribe">
+                <p>This is a verification email. Please do not unsubscribe from these notifications.</p>
+                <p><a href="{{ privacy_url|default:'#' }}" style="color: #95a5a6;">Privacy Policy</a> | <a href="{{ terms_url|default:'#' }}" style="color: #95a5a6;">Terms of Service</a></p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

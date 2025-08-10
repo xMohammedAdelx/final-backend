@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Patient Review Received - Dentist Portfolio & Clinic Management System</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c7be5 0%, #1e4db7 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Main content */
+        .content {
+            padding: 40px 30px;
+        }
+
+        .review-title {
+            font-size: 24px;
+            color: #2c7be5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .review-message {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        /* Review section */
+        .review-section {
+            background-color: #f8f9fa;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 8px;
+            border-left: 4px solid #2c7be5;
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .review-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .review-info {
+            flex: 1;
+        }
+
+        .patient-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c7be5;
+            margin-bottom: 5px;
+        }
+
+        .review-date {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .stars {
+            color: #ffc107;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .rating-text {
+            font-size: 16px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .review-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border: 1px solid #e9ecef;
+        }
+
+        .review-text {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .treatment-info {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .treatment-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c7be5;
+            margin-bottom: 8px;
+        }
+
+        .treatment-details {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* CTA Button */
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #2c7be5 0%, #1e4db7 100%);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Stats section */
+        .stats-section {
+            background-color: #f8f9fa;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stats-title {
+            font-size: 18px;
+            color: #2c7be5;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c7be5;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            margin: 20px 0;
+        }
+
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .contact-info {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        .unsubscribe {
+            font-size: 12px;
+            opacity: 0.6;
+            margin-top: 20px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .header, .content, .footer {
+                padding: 20px 15px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .review-title {
+                font-size: 20px;
+            }
+
+            .review-section {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .cta-button {
+                padding: 12px 25px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">Dentist</div>
+            <div class="tagline">Professional Dental Portfolio & Clinic Management</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <h1 class="review-title">New Patient Review Received! ⭐</h1>
+
+            <p class="review-message">
+                Dear <strong>{{ dentist.first_name|default:"Dr. Professional" }}</strong>,
+            </p>
+
+            <p class="review-message">
+                Great news! You've received a new patient review. Patient feedback is invaluable for building
+                trust and improving your practice. Here's what your patient had to say about their experience.
+            </p>
+
+            <!-- Review Section -->
+            <div class="review-section">
+                <div class="review-header">
+                    <div class="review-icon">👤</div>
+                    <div class="review-info">
+                        <div class="patient-name">{{ review.patient_name|default:"Patient Name" }}</div>
+                        <div class="review-date">{{ review.created_at|date:"F j, Y"|default:"Today" }}</div>
+                    </div>
+                </div>
+
+                <div class="rating">
+                    <div class="stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                                ★
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="rating-text">{{ review.rating|default:"5" }}/5 Stars</div>
+                </div>
+
+                <div class="review-content">
+                    <p class="review-text">
+                        "{{ review.comment|default:"The dental care I received was exceptional. The staff was professional,
+                        the treatment was thorough, and the overall experience exceeded my expectations.
+                        I highly recommend this practice to anyone looking for quality dental care." }}"
+                    </p>
+                </div>
+
+                {% if review.treatment_type %}
+                <div class="treatment-info">
+                    <div class="treatment-title">Treatment Received:</div>
+                    <div class="treatment-details">{{ review.treatment_type|default:"General Checkup" }}</div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-section">
+                <h3 class="stats-title">Your Review Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ total_reviews|default:"25" }}</div>
+                        <div class="stat-label">Total Reviews</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ average_rating|default:"4.8" }}</div>
+                        <div class="stat-label">Average Rating</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ five_star_reviews|default:"23" }}</div>
+                        <div class="stat-label">5-Star Reviews</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <a href="{{ dashboard_url|default:'#' }}" class="cta-button">
+                    View All Reviews →
+                </a>
+            </div>
+
+            <p class="review-message">
+                <strong>What you can do:</strong><br>
+                • Respond to this review to show patient care<br>
+                • Share positive reviews on your social media<br>
+                • Use feedback to improve your services<br>
+                • Thank patients for their valuable feedback
+            </p>
+
+            <p class="review-message">
+                <strong>Remember:</strong> Patient reviews are a powerful tool for building your reputation
+                and attracting new patients. Each review helps potential patients understand the quality
+                of care you provide.
+            </p>
+
+            <p class="review-message">
+                Keep up the excellent work! Your dedication to patient care is reflected in these positive reviews.
+            </p>
+
+            <p class="review-message">
+                Best regards,<br>
+                <strong>The DentistPro Team</strong>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-title">DentistPro</div>
+            <div class="social-links">
+                <a href="#" class="social-link">Website</a>
+                <a href="#" class="social-link">Support</a>
+                <a href="#" class="social-link">Documentation</a>
+            </div>
+            <div class="contact-info">
+                <p>📧 support@dentistpro.com</p>
+                <p>📞 +1 (555) 123-4567</p>
+                <p>📍 123 Healthcare Ave, Medical District</p>
+            </div>
+            <div class="unsubscribe">
+                <p>You received this email because you have notifications enabled for patient reviews.</p>
+                <p><a href="{{ unsubscribe_url|default:'#' }}" style="color: #95a5a6;">Unsubscribe</a> | <a href="{{ privacy_url|default:'#' }}" style="color: #95a5a6;">Privacy Policy</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -3,9 +3,495 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>We'd Love Your Feedback - Dentist Portfolio & Clinic Management System</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c7be5 0%, #1e4db7 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Main content */
+        .content {
+            padding: 40px 30px;
+        }
+
+        .feedback-title {
+            font-size: 24px;
+            color: #2c7be5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .feedback-message {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        /* Feedback section */
+        .feedback-section {
+            background-color: #f8f9fa;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 8px;
+            border-left: 4px solid #2c7be5;
+        }
+
+        .feedback-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .feedback-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .feedback-subtitle {
+            font-size: 18px;
+            color: #2c7be5;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .feedback-description {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Rating section */
+        .rating-section {
+            background-color: #e8f4fd;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .rating-title {
+            font-size: 16px;
+            color: #2c7be5;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .rating-stars {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .star {
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            font-size: 32px;
+            display: inline-block;
+            transform: scale(1);
+        }
+
+        .star:hover {
+            color: #ffc107;
+            transform: scale(1.2);
+            text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+        }
+
+        .star.active {
+            color: #ffc107;
+            transform: scale(1.1);
+            text-shadow: 0 0 8px rgba(255, 193, 7, 0.3);
+        }
+
+        .rating-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* CTA Button */
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #2c7be5 0%, #1e4db7 100%);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(44, 123, 229, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(44, 123, 229, 0.4);
+            background: linear-gradient(135deg, #1e4db7 0%, #2c7be5 100%);
+        }
+
+        .cta-button:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(44, 123, 229, 0.3);
+        }
+
+        /* Features section */
+        .features-section {
+            background-color: #f8f9fa;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .features-title {
+            font-size: 18px;
+            color: #2c7be5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 123, 229, 0.15);
+            border-color: #2c7be5;
+            background-color: #f8f9ff;
+        }
+
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #2c7be5;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Info section */
+        .info-section {
+            background-color: #e8f4fd;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .info-title {
+            font-size: 16px;
+            color: #2c7be5;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            margin: 20px 0;
+        }
+
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .social-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .contact-info {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        .unsubscribe {
+            font-size: 12px;
+            opacity: 0.6;
+            margin-top: 20px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .header, .content, .footer {
+                padding: 20px 15px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .feedback-title {
+                font-size: 20px;
+            }
+
+            .feedback-section, .rating-section, .features-section, .info-section {
+                padding: 20px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-button {
+                padding: 12px 25px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">Dentist</div>
+            <div class="tagline">Professional Dental Portfolio & Clinic Management</div>
+        </div>
 
+        <!-- Main Content -->
+        <div class="content">
+            <h1 class="feedback-title">We'd Love Your Feedback! 💬</h1>
+
+            <p class="feedback-message">
+                Dear <strong>{{ user.first_name|default:"Valued User" }}</strong>,
+            </p>
+
+            <p class="feedback-message">
+                Thank you for using DentistPro! We're committed to continuously improving our platform
+                to better serve dental professionals like you. Your feedback is invaluable in helping
+                us understand how we can enhance your experience.
+            </p>
+
+            <!-- Feedback Section -->
+            <div class="feedback-section">
+                <div class="feedback-header">
+                    <div class="feedback-icon">📝</div>
+                    <div class="feedback-subtitle">Share Your Experience</div>
+                    <div class="feedback-description">
+                        Help us understand how DentistPro is working for you and what we can improve.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rating Section -->
+            <div class="rating-section">
+                <h3 class="rating-title">How would you rate your overall experience?</h3>
+                <div class="rating-stars">
+                    <span class="star" data-rating="1">☆</span>
+                    <span class="star" data-rating="2">☆</span>
+                    <span class="star" data-rating="3">☆</span>
+                    <span class="star" data-rating="4">☆</span>
+                    <span class="star" data-rating="5">☆</span>
+                </div>
+                <p class="rating-text">Click on a star to rate your experience (or use the feedback form below)</p>
+                <p class="rating-text" style="font-size: 12px; color: #999; margin-top: 10px;">
+                    💡 <strong>Note:</strong> If the stars don't work in your email client, please use the feedback form below to share your rating.
+                </p>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features-section">
+                <h3 class="features-title">What features would you like us to improve?</h3>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">📋</div>
+                        <div class="feature-text">Portfolio Management</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🏥</div>
+                        <div class="feature-text">Clinic Management</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📅</div>
+                        <div class="feature-text">Appointment Scheduling</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💻</div>
+                        <div class="feature-text">Telemedicine Features</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <div class="feature-text">Patient Records</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🤖</div>
+                        <div class="feature-text">AI Features</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <a href="{{ feedback_url|default:'#' }}" class="cta-button">
+                    Share Your Feedback →
+                </a>
+            </div>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <h4 class="info-title">
+                    <span class="info-icon">💡</span>
+                    Your Feedback Matters
+                </h4>
+                <p class="info-text">
+                    • We read every piece of feedback carefully<br>
+                    • Your suggestions help shape future updates<br>
+                    • We prioritize features based on user needs<br>
+                    • Your privacy is protected - feedback is anonymous
+                </p>
+            </div>
+
+            <p class="feedback-message">
+                <strong>What happens next?</strong><br>
+                After you share your feedback, our team will review it and use it to prioritize
+                improvements and new features. We may also reach out for more details if needed.
+            </p>
+
+            <p class="feedback-message">
+                Thank you for helping us make DentistPro better for all dental professionals!
+            </p>
+
+            <p class="feedback-message">
+                Best regards,<br>
+                <strong>The DentistPro Team</strong>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-title">DentistPro</div>
+            <div class="social-links">
+                <a href="#" class="social-link">Website</a>
+                <a href="#" class="social-link">Support</a>
+                <a href="#" class="social-link">Documentation</a>
+            </div>
+            <div class="contact-info">
+                <p>📧 support@dentistpro.com</p>
+                <p>📞 +1 (555) 123-4567</p>
+                <p>📍 123 Healthcare Ave, Medical District</p>
+            </div>
+            <div class="unsubscribe">
+                <p>You received this email because you're a registered user of DentistPro.</p>
+                <p><a href="{{ unsubscribe_url|default:'#' }}" style="color: #95a5a6;">Unsubscribe</a> | <a href="{{ privacy_url|default:'#' }}" style="color: #95a5a6;">Privacy Policy</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple star rating functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('.star');
+
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = this.getAttribute('data-rating');
+
+                    // Update all stars
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.textContent = '★';
+                            s.classList.add('active');
+                        } else {
+                            s.textContent = '☆';
+                            s.classList.remove('active');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>

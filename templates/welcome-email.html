@@ -3,9 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Welcome to Dentist Portfolio & Clinic Management System</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c7be5 0%, #1e4db7 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Main content */
+        .content {
+            padding: 40px 30px;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            color: #2c7be5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .welcome-message {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        /* Features section */
+        .features {
+            background-color: #f8f9fa;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .features-title {
+            font-size: 20px;
+            color: #2c7be5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 0;
+        }
+
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #2c7be5;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* CTA Button */
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #2c7be5 0%, #1e4db7 100%);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            margin: 20px 0;
+        }
+
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .contact-info {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        .unsubscribe {
+            font-size: 12px;
+            opacity: 0.6;
+            margin-top: 20px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .header, .content, .footer {
+                padding: 20px 15px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .welcome-title {
+                font-size: 20px;
+            }
+
+            .features {
+                padding: 20px;
+            }
+
+            .cta-button {
+                padding: 12px 25px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">Dentist</div>
+            <div class="tagline">Professional Dental Portfolio & Clinic Management</div>
+        </div>
 
+        <!-- Main Content -->
+        <div class="content">
+            <h1 class="welcome-title">Welcome to Your Dental Practice Management Platform! 🎉</h1>
+
+            <p class="welcome-message">
+                Dear <strong>{{ user.first_name|default:"Valued Professional" }}</strong>,
+            </p>
+
+            <p class="welcome-message">
+                Welcome to DentistPro - your comprehensive solution for modern dental practice management!
+                We're excited to have you join our community of healthcare professionals who are transforming
+                the way dental care is delivered.
+            </p>
+
+            <p class="welcome-message">
+                Your account has been successfully created and you're now ready to start building your
+                professional portfolio, managing your clinic operations, and providing exceptional care
+                to your patients through our integrated telemedicine features.
+            </p>
+
+            <!-- Features Section -->
+            <div class="features">
+                <h2 class="features-title">What You Can Do With DentistPro</h2>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📋</div>
+                    <div class="feature-text">Create and customize your professional dental portfolio</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🏥</div>
+                    <div class="feature-text">Manage multiple clinics and staff efficiently</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📅</div>
+                    <div class="feature-text">Schedule and manage patient appointments seamlessly</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">💻</div>
+                    <div class="feature-text">Conduct secure video consultations and telemedicine sessions</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-text">Track patient records and treatment progress</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🤖</div>
+                    <div class="feature-text">Leverage AI-powered insights for better patient care</div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <a href="{{ login_url|default:'#' }}" class="cta-button">
+                    Get Started Now →
+                </a>
+            </div>
+
+            <p class="welcome-message">
+                <strong>Next Steps:</strong><br>
+                1. Complete your profile setup<br>
+                2. Add your clinic information<br>
+                3. Start building your portfolio<br>
+                4. Invite your team members
+            </p>
+
+            <p class="welcome-message">
+                If you have any questions or need assistance getting started, our support team is here to help.
+                Don't hesitate to reach out to us at <a href="mailto:support@dentistpro.com" style="color: #2c7be5;">support@dentistpro.com</a>.
+            </p>
+
+            <p class="welcome-message">
+                Welcome aboard! We're here to help you provide exceptional dental care and grow your practice.
+            </p>
+
+            <p class="welcome-message">
+                Best regards,<br>
+                <strong>The DentistPro Team</strong>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-title">DentistPro</div>
+            <div class="social-links">
+                <a href="#" class="social-link">Website</a>
+                <a href="#" class="social-link">Support</a>
+                <a href="#" class="social-link">Documentation</a>
+            </div>
+            <div class="contact-info">
+                <p>📧 support@dentistpro.com</p>
+                <p>📞 +1 (555) 123-4567</p>
+                <p>📍 123 Healthcare Ave, Medical District</p>
+            </div>
+            <div class="unsubscribe">
+                <p>You received this email because you signed up for DentistPro.</p>
+                <p><a href="{{ unsubscribe_url|default:'#' }}" style="color: #95a5a6;">Unsubscribe</a> | <a href="{{ privacy_url|default:'#' }}" style="color: #95a5a6;">Privacy Policy</a></p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

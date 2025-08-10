@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Cancelled - Dentist Portfolio & Clinic Management System</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c7be5 0%, #1e4db7 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Main content */
+        .content {
+            padding: 40px 30px;
+        }
+
+        .cancellation-title {
+            font-size: 24px;
+            color: #2c7be5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .cancellation-message {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        /* Cancellation section */
+        .cancellation-section {
+            background-color: #f8f9fa;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 8px;
+            border-left: 4px solid #2c7be5;
+            text-align: center;
+        }
+
+        .cancellation-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .cancellation-subtitle {
+            font-size: 18px;
+            color: #2c7be5;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .cancellation-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* Cancelled appointment details */
+        .cancelled-appointment {
+            background-color: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #2c7be5;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        /* CTA Buttons */
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #2c7be5 0%, #1e4db7 100%);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+            margin: 0 10px 10px 0;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .cta-button.secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        /* Reschedule section */
+        .reschedule-section {
+            background-color: #e8f4fd;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .reschedule-title {
+            font-size: 18px;
+            color: #2c7be5;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .reschedule-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .reschedule-text {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .reschedule-benefits {
+            list-style: none;
+            padding: 0;
+        }
+
+        .reschedule-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .reschedule-bullet {
+            width: 6px;
+            height: 6px;
+            background-color: #2c7be5;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        /* Info section */
+        .info-section {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .info-title {
+            font-size: 16px;
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #856404;
+        }
+
+        /* Next steps section */
+        .next-steps-section {
+            background-color: #f8f9fa;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .next-steps-title {
+            font-size: 18px;
+            color: #2c7be5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .next-steps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .next-step-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .next-step-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #2c7be5;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .next-step-text {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            margin: 20px 0;
+        }
+
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .contact-info {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        .unsubscribe {
+            font-size: 12px;
+            opacity: 0.6;
+            margin-top: 20px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .header, .content, .footer {
+                padding: 20px 15px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .cancellation-title {
+                font-size: 20px;
+            }
+
+            .cancellation-section, .reschedule-section, .info-section, .next-steps-section {
+                padding: 20px;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .detail-value {
+                text-align: left;
+                margin-top: 5px;
+            }
+
+            .next-steps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-button {
+                display: block;
+                margin: 10px 0;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">Dentist</div>
+            <div class="tagline">Professional Dental Portfolio & Clinic Management</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <h1 class="cancellation-title">Appointment Cancelled 📅</h1>
+
+            <p class="cancellation-message">
+                Dear <strong>{{ patient.first_name|default:"Valued Patient" }}</strong>,
+            </p>
+
+            <p class="cancellation-message">
+                We have received your request to cancel your dental appointment. Your cancellation has been
+                processed successfully. We understand that sometimes circumstances change, and we're here to
+                help you reschedule when you're ready.
+            </p>
+
+            <!-- Cancellation Section -->
+            <div class="cancellation-section">
+                <div class="cancellation-icon">❌</div>
+                <div class="cancellation-subtitle">Appointment Cancelled</div>
+                <div class="cancellation-description">
+                    Your appointment has been successfully cancelled from our system.
+                </div>
+
+                <!-- Cancelled Appointment Details -->
+                <div class="cancelled-appointment">
+                    <div class="detail-row">
+                        <span class="detail-label">Original Date:</span>
+                        <span class="detail-value">{{ appointment.date|date:"l, F j, Y"|default:"Monday, January 1, 2024" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Original Time:</span>
+                        <span class="detail-value">{{ appointment.time|time:"g:i A"|default:"10:00 AM" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Treatment:</span>
+                        <span class="detail-value">{{ appointment.treatment_type|default:"General Checkup" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Dentist:</span>
+                        <span class="detail-value">Dr. {{ appointment.dentist.name|default:"Smith" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Cancelled On:</span>
+                        <span class="detail-value">{{ cancelled_at|date:"F j, Y at g:i A"|default:"Today" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <a href="{{ reschedule_url|default:'#' }}" class="cta-button">
+                    Reschedule Appointment →
+                </a>
+                <a href="{{ new_appointment_url|default:'#' }}" class="cta-button secondary">
+                    Book New Appointment →
+                </a>
+            </div>
+
+            <!-- Reschedule Section -->
+            <div class="reschedule-section">
+                <h3 class="reschedule-title">
+                    <span class="reschedule-icon">📅</span>
+                    Ready to Reschedule?
+                </h3>
+                <p class="reschedule-text">
+                    We'd be happy to help you find a new appointment time that works better for you.
+                    Rescheduling is quick and easy through our online system.
+                </p>
+                <ul class="reschedule-benefits">
+                    <li class="reschedule-item">
+                        <div class="reschedule-bullet"></div>
+                        View available time slots instantly
+                    </li>
+                    <li class="reschedule-item">
+                        <div class="reschedule-bullet"></div>
+                        Choose from multiple appointment times
+                    </li>
+                    <li class="reschedule-item">
+                        <div class="reschedule-bullet"></div>
+                        Same-day rescheduling available
+                    </li>
+                    <li class="reschedule-item">
+                        <div class="reschedule-bullet"></div>
+                        No cancellation fees for rescheduling
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Next Steps Section -->
+            <div class="next-steps-section">
+                <h3 class="next-steps-title">What You Can Do Next</h3>
+                <div class="next-steps-grid">
+                    <div class="next-step-item">
+                        <div class="next-step-icon">📅</div>
+                        <div class="next-step-text">Reschedule for a later date</div>
+                    </div>
+                    <div class="next-step-item">
+                        <div class="next-step-icon">📞</div>
+                        <div class="next-step-text">Call us to discuss options</div>
+                    </div>
+                    <div class="next-step-item">
+                        <div class="next-step-icon">🌐</div>
+                        <div class="next-step-text">Book online anytime</div>
+                    </div>
+                    <div class="next-step-item">
+                        <div class="next-step-icon">📧</div>
+                        <div class="next-step-text">Email us for assistance</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <h4 class="info-title">
+                    <span class="info-icon">ℹ️</span>
+                    Important Information
+                </h4>
+                <p class="info-text">
+                    • No cancellation fees for appointments cancelled 24+ hours in advance<br>
+                    • Your dental health is important - please reschedule when convenient<br>
+                    • We're here to help find a time that works for you<br>
+                    • Emergency dental care is always available
+                </p>
+            </div>
+
+            <p class="cancellation-message">
+                <strong>Need to reschedule or have questions?</strong><br>
+                Contact us at <a href="tel:{{ clinic.phone|default:'+1-555-123-4567' }}" style="color: #2c7be5;">{{ clinic.phone|default:"+1-555-123-4567" }}</a>
+                or reply to this email. We're here to help you find a time that works better for you.
+            </p>
+
+            <p class="cancellation-message">
+                We look forward to seeing you at your next appointment!<br>
+                <strong>The {{ clinic.name|default:"Dental" }} Team</strong>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-title">DentistPro</div>
+            <div class="social-links">
+                <a href="#" class="social-link">Website</a>
+                <a href="#" class="social-link">Support</a>
+                <a href="#" class="social-link">Documentation</a>
+            </div>
+            <div class="contact-info">
+                <p>📧 support@dentistpro.com</p>
+                <p>📞 +1 (555) 123-4567</p>
+                <p>📍 123 Healthcare Ave, Medical District</p>
+            </div>
+            <div class="unsubscribe">
+                <p>You received this email because you cancelled an appointment.</p>
+                <p><a href="{{ unsubscribe_url|default:'#' }}" style="color: #95a5a6;">Unsubscribe</a> | <a href="{{ privacy_url|default:'#' }}" style="color: #95a5a6;">Privacy Policy</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

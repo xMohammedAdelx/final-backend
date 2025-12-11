@@ -11,6 +11,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from .serializers import (
     UserSerializer,
     StaffSerializer,
@@ -259,23 +261,23 @@ class PasswordResetRequestView(APIView):
         frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
         reset_url = f"{frontend_url}/reset-password?uid={uid}&token={token}"
 
-        # Send email pls ana t3bt
+        # Send email
+        context = {
+            'user': user,
+            'reset_url': reset_url,
+            'expiry_hours': 24
+        }
+        
+        html_message = render_to_string('reset-password.html', context)
+        plain_message = strip_tags(html_message)
+        
         send_mail(
             subject="Password Reset - Dentist App",
-            message=f"""Hello {user.first_name or user.email},
-
-You requested a password reset. Use this link to reset your password:
-
-{reset_url}
-
-If you didn't request this, please ignore this email.
-
-Best regards,
-Dentist App Team
-""",
+            message=plain_message,
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[user.email],
             fail_silently=False,
+            html_message=html_message
         )
 
         return Response(
@@ -353,22 +355,23 @@ class EmailVerificationRequestView(APIView):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
         verification_url = f"{frontend_url}/verify-email?uid={uid}&token={token}"
+        
+        context = {
+            'user': user,
+            'verification_url': verification_url,
+            'expiry_hours': 24
+        }
+        
+        html_message = render_to_string('email-verification.html', context)
+        plain_message = strip_tags(html_message)
+
         send_mail(
             subject="Email Verification - Dentist App",
-            message=f"""Hello {user.first_name or user.email},
-
-You requested an email verification. Use this link to verify your email:
-
-{verification_url}
-
-If you didn't request this, please ignore this email.
-
-Best regards,
-Dentist App Team
-""",
+            message=plain_message,
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[user.email],
             fail_silently=False,
+            html_message=html_message
         )
         return Response(
             {"message": "If an account with this email exists, a verification link has been sent."},

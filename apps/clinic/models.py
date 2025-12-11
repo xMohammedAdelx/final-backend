@@ -37,8 +37,8 @@ class ClinicDoctors(models.Model):
         return self.doc_name
 
 
-# Clinic Gallary
-class ClinicGallary(models.Model):
+# Clinic Gallery
+class ClinicGallery(models.Model):
     clinic = models.ForeignKey(ClinicProfile, on_delete=models.CASCADE, null=True)
     image = models.URLField(null=True)
     description = models.TextField(null=True)
@@ -56,18 +56,28 @@ class ClinicReview(models.Model):
     comment = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     def __str__(self):
-        return f"{self.patient.username}'s review"
+        if self.patient:
+            return f"{self.patient.username}'s review"
+        return "Anonymous review"
 
 
 # Clinic Appointment
 class ClinicAppointment(models.Model):
     clinic = models.ForeignKey(ClinicProfile, on_delete=models.CASCADE , null=True)
+    patient = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     patient_name = models.CharField(max_length=255, null=True)
     patient_phone = models.CharField(max_length=255, null=True)
     doctor_name = models.ForeignKey(ClinicDoctors, on_delete=models.CASCADE , null=True)
     date = models.DateField(null=True)
     time = models.TimeField(null=True)
     notes = models.TextField(null=True)
+    status_choices = [
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ]
+    status = models.CharField(max_length=20, choices=status_choices, default='pending')
     created_at = models.DateTimeField(auto_now_add=True , null=True)
     def __str__(self):
         return self.patient_name
@@ -87,9 +97,9 @@ class ClinicWorkingHours(models.Model):
 # Clinic Contact Message
 class ClinicContactMessage(models.Model):
     clinic = models.ForeignKey(ClinicProfile, on_delete=models.CASCADE , null=True)
-    start_time = models.TimeField(null=True)
-    end_time = models.TimeField(null=True)
     name = models.CharField(max_length=255, null=True)
+    email = models.EmailField(null=True)
+    message = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     def __str__(self):
         return self.name

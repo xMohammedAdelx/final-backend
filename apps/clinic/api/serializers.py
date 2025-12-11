@@ -3,7 +3,7 @@ from apps.clinic.models import (
     ClinicProfile, 
     ClinicService, 
     ClinicDoctors, 
-    ClinicGallary,
+    ClinicGallery,
     ClinicReview, 
     ClinicAppointment, 
     ClinicWorkingHours,
@@ -29,11 +29,11 @@ class ClinicDoctorsSerializer(serializers.ModelSerializer):
         model = ClinicDoctors
         fields = '__all__'
 
-class ClinicGallarySerializer(serializers.ModelSerializer):
+class ClinicGallerySerializer(serializers.ModelSerializer):
     clinic_name = serializers.ReadOnlyField(source='clinic.name') 
 
     class Meta:
-        model = ClinicGallary
+        model = ClinicGallery
         fields = '__all__'
 
 class ClinicReviewSerializer(serializers.ModelSerializer):

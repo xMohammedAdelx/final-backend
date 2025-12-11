@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
-
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 # API DOCUMENTATION CONFIGURATION <3
 
 urlpatterns = [
@@ -33,6 +33,11 @@ urlpatterns = [
     # API ENDPOINTS <3
     path('api/clinic/', include('apps.clinic.api.urls')),
     path('api/users/', include('apps.users.api.urls')),
+    path('api/patient/', include('apps.patient.api.urls')),
+    path('api/portofolio/', include('apps.portofolio.api.urls')),
+    path('api/auth/', include('apps.users.api.urls')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 if settings.DEBUG:

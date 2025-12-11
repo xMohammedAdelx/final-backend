@@ -1,0 +1,49 @@
+# Neon Database Setup Instructions
+
+1. Create a .env file in the project root with the following content:
+
+```
+DEBUG=True
+SECRET_KEY=django-insecure-n8#3wbmx#q42-x@)6e64n@8!e5%9xm6qx8h8*m8)&9-5@za#97
+# Replace with your actual Neon database URL
+DATABASE_URL=postgres://username:password@ep-your-project-id.region.aws.neon.tech/dbname?sslmode=require
+```
+
+2. Replace the placeholder values in the DATABASE_URL with your actual Neon database credentials:
+   - username: Your Neon database username
+   - password: Your Neon database password
+   - ep-your-project-id: Your Neon project ID
+   - region: The region where your Neon database is hosted (e.g., us-east-2)
+   - dbname: Your Neon database name
+
+3. Make sure the psycopg2-binary package is installed:
+   ```
+   pip install psycopg2-binary
+   ```
+
+4. The Django settings.py file is already configured to use the DATABASE_URL from the .env file:
+   ```python
+   DATABASES = {
+       'default': dj_database_url.config(
+           default=os.environ.get('DATABASE_URL')
+       )
+   }
+   ```
+
+5. After setting up the .env file with the correct Neon database URL, run migrations:
+   ```
+   python manage.py migrate
+   ```
+
+6. Create a superuser to access the admin interface:
+   ```
+   python manage.py createsuperuser
+   ```
+
+7. Run the development server:
+   ```
+   python manage.py runserver
+   ```
+
+
+

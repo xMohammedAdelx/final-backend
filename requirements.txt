@@ -1,23 +1,28 @@
 # Django and Core Dependencies
 Django==5.2.5
 python-dotenv==1.0.0
+psycopg2-binary==2.9.10
 
 # REST API
-djangorestframework==3.14.0
-django-cors-headers==4.3.1
-drf-spectacular==0.27.0
+djangorestframework==3.16.1
+django-cors-headers==4.7.0
+drf-spectacular==0.28.0
+django-filter==24.3
+
+# JWT Authentication
+djangorestframework-simplejwt==5.3.1
 
 # Celery
 celery==5.3.6
 redis==5.0.1
-django-celery-beat==2.5.0
+django-celery-beat==2.8.0
 django-celery-results==2.5.1
 
 # Development Tools and Code Quality Libraries
 # These are tools for development, testing, and code quality checks
 
 # Code Formatting and Linting
-black==23.12.1
+black==24.10.0
 flake8==7.0.0
 isort==5.13.2
 autoflake==2.2.1
@@ -30,7 +35,7 @@ pylint==3.0.3
 
 # Security Tools
 bandit==1.8.6
-safety==2.3.5
+safety==3.2.7
 
 # Testing and Coverage
 coverage==7.4.1

@@ -2,40 +2,35 @@ from rest_framework import permissions
 
 
 class IsDentistOwner(permissions.BasePermission):
-    """
-    Custom permission to only allow dentists to view/edit/create their own profile
-    """
+<<<<<<< HEAD
+    #Custom permission to only allow dentists to view/edit/create their own profile
     def has_object_permission(self, request, view, obj):
-        # obj is a DentistProfile instance
-        # Check if the dentist's user_id matches the requesting user
+        #obj is a DentistProfile instance
+        #Check if the dentist's user_id matches the requesting user
         return obj.user_id == request.user
 
 
 class IsDentistOwnerOfRelatedObject(permissions.BasePermission):
-    """
-    Custom permission for objects related to a dentist profile
-    Examples: Experience, Education, Skill, Service, etc
-    These objects have a 'dentist_id' field pointing to DentistProfile
-    """
+    #Custom permission for objects related to a dentist profile
+    #Examples: Experience, Education, Skill, Service, etc
+    #These objects have a 'dentist_id' field pointing to DentistProfile
     def has_object_permission(self, request, view, obj):
-        # obj has a dentist_id field pointing to DentistProfile
+        #obj has a dentist_id field pointing to DentistProfile
         user = request.user
-        # Staff/Admin can access everything
+        #Staff/Admin can access everything
         if user.is_staff or user.is_superuser:
             return True
-        # Check if the related dentist profile belongs to this user
+        #Check if the related dentist profile belongs to this user
         if hasattr(obj, "dentist_id") and obj.dentist_id:
             return obj.dentist_id.user_id == user
         return False
 
 
 class CanAccessAppointment(permissions.BasePermission):
-    """
-    Custom permission to allow:
-    - Patient to view their own appointments
-    - Dentist to view appointments with them
-    - Staff/Admin to view all appointments
-    """
+    #Custom permission to allow
+    #Patient to view their own appointments
+    #Dentist to view appointments with them
+    #Staff/Admin to view all appointments
     def has_object_permission(self, request, view, obj):
         # obj is an Appointment instance
         user = request.user
@@ -52,19 +47,16 @@ class CanAccessAppointment(permissions.BasePermission):
 
 
 class IsTestimonialOwnerOrAdmin(permissions.BasePermission):
-    """
-    Custom permission for testimonials
-    Anyone can read (public)
-    Only authenticated users can create
-    Only the patient who created the testimonial or admin can edit/delete
-    """
+    #Custom permission for testimonials
+    #Anyone can read (public)
+    #Only authenticated users can create
+    #Only the patient who created the testimonial or admin can edit/delete
     def has_permission(self, request, view):
         # Read permissions allowed to everyone
         if request.method in permissions.SAFE_METHODS:
             return True
         # Write permissions require authentication
         return request.user and request.user.is_authenticated
-
     def has_object_permission(self, request, view, obj):
         # Read permissions allowed to everyone
         if request.method in permissions.SAFE_METHODS:
@@ -79,11 +71,9 @@ class IsTestimonialOwnerOrAdmin(permissions.BasePermission):
 
 
 class IsPublicReadOrDentistAdminWrite(permissions.BasePermission):
-    """
-    Custom permission to ensure only dentists and admins can write
-    Anyone can read (public)
-    Only dentists (users with DentistProfile) and admins can create/update/delete
-    """
+    #Custom permission to ensure only dentists and admins can write
+    #Anyone can read (public)
+    #Only dentists (users with DentistProfile) and admins can create/update/delete
     def has_permission(self, request, view):
         from apps.portofolio.models import DentistProfile
         

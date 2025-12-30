@@ -17,6 +17,26 @@ class UserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True}
         }
     
+    def validate_username(self, value):
+        if value and not value.isalpha() and (len(value) > 255 or len(value) < 2 ):
+            raise serializers.ValidationError("Name must contain only letters and be between 2 and 255 characters long.")
+        return value
+
+    def validate_phone_number(self, value):
+        if value and (not value.isdigit() or len(value) != 11):
+            raise serializers.ValidationError("Phone number must contain only digits and be 11 characters long.")
+        return value
+
+    def validate_password(self, value):
+        if value:
+            if len(value) < 8:
+                raise serializers.ValidationError("Password must be at least 8 characters long.")
+            if not any(char.isdigit() for char in value):
+                raise serializers.ValidationError("Password must contain at least one digit.")
+            if not any(char.isalpha() for char in value):
+                raise serializers.ValidationError("Password must contain at least one letter.")
+        return value
+    
     def create(self, validated_data):
         """
         Create a new user with properly hashed password
@@ -55,12 +75,22 @@ class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
         fields = '__all__'
+    
+    def validate_hire_date(self, value):
+        if value > timezone.now().date():
+            raise serializers.ValidationError("Hire date cannot be in the future.")
+        return value
 
 class StaffRoleSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = StaffRole
         fields = '__all__'
+    
+    def validate_name(self, value):
+        if value and not value.isalpha() and (len(value) > 255 or len(value) < 2 ):
+            raise serializers.ValidationError("Name must contain only letters and be between 2 and 255 characters long.")
+        return value
 
 
 class PasswordResetRequestSerializer(serializers.Serializer):

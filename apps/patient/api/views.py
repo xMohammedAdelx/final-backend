@@ -127,7 +127,13 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
             pass
         patient_id = self.request.data.get("patient")
         if not patient_id:
+            # If patient is not provided, we can't create a record
+            # But 'patient' is a required field on the model.
+            # We should probably raise a validation error if it's missing from the request payload
+            # even if the serializer ignores it due to read_only.
+
             raise ValidationError({"patient": "This field is required."})
+
         serializer.save(patient_id=patient_id, clinic=clinic)
 
     @action(detail=True, methods=['post'])

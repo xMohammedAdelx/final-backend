@@ -103,3 +103,5 @@ Pipfile.lock
 # Django secret key file or other secrets (optional)
 # secrets.json
 
+
+docs/

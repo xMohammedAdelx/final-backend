@@ -19,12 +19,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-    TokenBlacklistView,
-)
+
 # API DOCUMENTATION CONFIGURATION <3
 
 urlpatterns = [
@@ -47,10 +42,7 @@ urlpatterns = [
     path("api/patient/", include("apps.patient.api.urls")),
     path("api/portofolio/", include("apps.portofolio.api.urls")),
     # AUTHENTICATION ENDPOINTS <3
-    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
-    path("api/token/logout/", TokenBlacklistView.as_view(), name="token_blacklist"),
+    path("api/auth/", include("apps.users.api.urls")),
 ]
 
 if settings.DEBUG:

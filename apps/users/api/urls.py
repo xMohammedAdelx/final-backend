@@ -8,6 +8,9 @@ from .views import (
     PasswordResetConfirmView,
     EmailVerificationRequestView,
     EmailVerificationConfirmView,
+    CookieTokenObtainPairView,
+    CookieTokenRefreshView,
+    LogoutView,
     )
 
 router = DefaultRouter()
@@ -21,4 +24,7 @@ urlpatterns = [
     path('password-reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('verify-email/', EmailVerificationRequestView.as_view(), name='email_verification_request'),
     path('verify-email/confirm/', EmailVerificationConfirmView.as_view(), name='email_verification_confirm'),
+    path('login/', CookieTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('refresh/', CookieTokenRefreshView.as_view(), name='token_refresh'),
+    path('logout/', LogoutView.as_view(), name='token_logout'),
 ]

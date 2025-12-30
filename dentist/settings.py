@@ -154,12 +154,59 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "apps.users.api.authentication.CookieJWTAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
 
 # JWT SETTINGS <3
-from datetime import timedelta
+
+<<<<<<< Updated upstream
+=======
+# MEDIA FILES SETTINGS <3
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# CUSTOM USER MODEL <3
+AUTH_USER_MODEL = 'users.User'  
+
+# FILE UPLOAD SETTINGS <3
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  
+
+# AUTHENTICATION BACKENDS <3
+AUTHENTICATION_BACKENDS = [
+    'apps.users.models.EmailBackend',  # Custom email authentication
+    'django.contrib.auth.backends.ModelBackend',  # Default username authentication
+]
+
+# SPECTACULAR SETTINGS <3
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Dentist API',
+    'DESCRIPTION': 'API documentation for Dentist application',
+    'VERSION': 'v1',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SCHEMA_PATH_PREFIX': r'/api/v[0-9]',
+    'COMPONENT_SPLIT_REQUEST': True,
+    'CONTACT': {
+        'name': 'API Support',
+        'email': 'contact@dentist.local',
+    },
+    'LICENSE': {'name': 'BSD License'},
+}
+
+# DATABASE SETTINGS <3
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL')
+    )
+}
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=90),  # Access token valid for 1 hour

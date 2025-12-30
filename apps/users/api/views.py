@@ -13,6 +13,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from .serializers import (
     UserSerializer,
     StaffSerializer,
@@ -21,6 +23,7 @@ from .serializers import (
     PasswordResetConfirmSerializer,
     EmailVerificationRequestSerializer,
     EmailVerificationConfirmSerializer,
+    EmailTokenObtainPairSerializer,
     )
 from apps.users.models import (
     User,
@@ -420,3 +423,99 @@ class EmailVerificationConfirmView(APIView):
             {"message": "Email has been verified successfully."},
             status=status.HTTP_200_OK
         )
+
+
+class CookieTokenObtainPairView(TokenObtainPairView):
+    """
+    Login with email or username and keys tokens in HttpOnly cookies.
+    """
+    serializer_class = EmailTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        
+        if response.status_code == 200:
+            access_token = response.data.get('access')
+            refresh_token = response.data.get('refresh')
+            
+            response.set_cookie(
+                'access_token',
+                access_token,
+                max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
+                httponly=True,
+                samesite='Lax',
+                secure=False, 
+            )
+
+            response.set_cookie(
+                'refresh_token',
+                refresh_token,
+                max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(),
+                httponly=True,
+                samesite='Lax',
+                secure=False, 
+            )
+            
+
+        return response
+
+
+class CookieTokenRefreshView(TokenRefreshView):
+    """
+    Refresh access token using refresh token from cookie.
+    """
+    def post(self, request, *args, **kwargs):
+        if 'refresh' not in request.data and 'refresh_token' in request.COOKIES:
+            request.data['refresh'] = request.COOKIES['refresh_token']
+        
+        try:
+            response = super().post(request, *args, **kwargs)
+        except (InvalidToken, TokenError) as e:
+            return Response({"detail": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if response.status_code == 200:
+            access_token = response.data.get('access')
+            
+            response.set_cookie(
+                'access_token',
+                access_token,
+                max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
+                httponly=True,
+                samesite='Lax',
+                secure=False, 
+            )
+
+            if 'refresh' in response.data:
+                refresh_token = response.data.get('refresh')
+                response.set_cookie(
+                    'refresh_token',
+                    refresh_token,
+                    max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(),
+                    httponly=True,
+                    samesite='Lax',
+                    secure=False, 
+                )
+
+        return response
+
+
+class LogoutView(APIView):
+    """
+    Logout by clearing cookies.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        response = Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response
+
+
+class EmailTokenObtainPairView(TokenObtainPairView):
+    """
+    Login with email or username.
+    Takes email (or username) and password, returns JWT access and refresh tokens.
+    DEPRECATED: Use CookieTokenObtainPairView instead.
+    """
+    serializer_class = EmailTokenObtainPairSerializer

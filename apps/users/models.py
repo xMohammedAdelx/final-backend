@@ -60,4 +60,55 @@ class PasswordResetToken(models.Model):
         Check if the token is still valid (not expired and not used)
         """
         return self.is_used and timezone.now() < (self.created_at + timedelta(minutes=15))
-    
+
+
+class EmailBackend:
+    """
+    Custom authentication backend that allows users to login with email.
+    Supports both email and username authentication.
+    """
+
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        """
+        Authenticate user with email or username.
+        The 'username' parameter can be either an email or a username.
+        """
+        if username is None:
+            username = kwargs.get(User.USERNAME_FIELD)
+        
+        if username is None or password is None:
+            return None
+
+        # Try to find user by email first
+        try:
+            user = User.objects.get(email__iexact=username)
+        except User.DoesNotExist:
+            # If not found by email, try username
+            try:
+                user = User.objects.get(username__iexact=username)
+            except User.DoesNotExist:
+                # Run the default password hasher once to reduce timing
+                # difference between an existing and a nonexistent user
+                User().set_password(password)
+                return None
+
+        if user.check_password(password) and self.user_can_authenticate(user):
+            return user
+        
+        return None
+
+    def user_can_authenticate(self, user):
+        """
+        Reject users with is_active=False.
+        """
+        is_active = getattr(user, 'is_active', None)
+        return is_active or is_active is None
+
+    def get_user(self, user_id):
+        """
+        Retrieve user by primary key.
+        """
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None

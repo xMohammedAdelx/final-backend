@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth import authenticate
 from apps.users.models import (
     User,
     Staff,
@@ -128,3 +130,69 @@ class EmailVerificationConfirmSerializer(serializers.Serializer):
     """
     uid = serializers.CharField(help_text="User ID from verification link (base64 encoded)")
     token = serializers.CharField(help_text="Verification token from email link")
+
+
+class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    Custom token serializer that allows login with email or username.
+    Replaces the default 'username' field with 'email' for better UX.
+    """
+    username_field = 'email'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Replace 'username' field with 'email' in the serializer
+        self.fields['email'] = serializers.CharField(
+            help_text="User's email address or username"
+        )
+        # Remove the default username field if it exists
+        self.fields.pop('username', None)
+
+    def validate(self, attrs):
+        # Get credentials
+        email_or_username = attrs.get('email')
+        password = attrs.get('password')
+
+        if not email_or_username or not password:
+            raise serializers.ValidationError(
+                'Must include "email" and "password".'
+            )
+
+        # Authenticate using email or username (via our custom backend)
+        user = authenticate(
+            request=self.context.get('request'),
+            username=email_or_username,
+            password=password
+        )
+
+        if user is None:
+            raise serializers.ValidationError(
+                'No active account found with the given credentials.'
+            )
+
+        if not user.is_active:
+            raise serializers.ValidationError(
+                'User account is disabled.'
+            )
+
+        # Generate tokens
+        refresh = self.get_token(user)
+
+        data = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
+        return data
+
+    @classmethod
+    def get_token(cls, user):
+        from rest_framework_simplejwt.tokens import RefreshToken
+        token = RefreshToken.for_user(user)
+        
+        # Add custom claims to the token
+        token['email'] = user.email
+        token['username'] = user.username
+        token['is_email_verified'] = user.is_email_verified
+        
+        return token

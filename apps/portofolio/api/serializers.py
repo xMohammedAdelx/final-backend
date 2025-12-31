@@ -426,8 +426,6 @@ class CertificationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'dentist_username', 'dentist_first_name', 'dentist_last_name', 'dentist_email']
 
-<<<<<<< HEAD
-=======
     def validate_years_of_experience(self, value):
         if value is not None and value < 0:
             raise serializers.ValidationError("Years of experience cannot be negative.")
@@ -449,8 +447,6 @@ class CertificationSerializer(serializers.ModelSerializer):
         if value and (len(value) < 2 or len(value) > 255):
              raise serializers.ValidationError("Clinic address must be at least 2 characters long.")
         return value
-
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
 class ExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Experience
@@ -465,8 +461,6 @@ class ExperienceSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'dentist_id']
 
-<<<<<<< HEAD
-=======
     def validate_dates(self, data):
         if 'start_date' in data and 'end_date' in data and data['end_date']:
             if data['start_date'] > data['end_date']:
@@ -482,8 +476,6 @@ class ExperienceSerializer(serializers.ModelSerializer):
          if value and (len(value) < 2 or len(value) > 255):
              raise serializers.ValidationError("Organization must be at least 2 characters long.")
          return value
-
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
 
 class TestimonialSerializer(serializers.ModelSerializer):
     # Add read-only display fields
@@ -513,17 +505,6 @@ class TestimonialSerializer(serializers.ModelSerializer):
             'patient_name',
             'created_at',
         ]
-<<<<<<< HEAD
-
-    def validate_rating(self, value):
-        '''Ensure rating is between 1-5'''
-        if value < 1 or value > 5:
-            raise serializers.ValidationError('Rating must be between 1 and 5.')
-        return value
-
-
-=======
-    
     def validate_patient_name(self, value):
             if value.isalpha() and (len(value) < 2 or len(value) > 100):
                 raise serializers.ValidationError("Patient name must be at least 2 characters long.")
@@ -538,9 +519,6 @@ class TestimonialSerializer(serializers.ModelSerializer):
         if value and (len(value) < 2 or len(value) > 255):
             raise serializers.ValidationError("Feedback must be at least 2 characters long.")
         return value
-
-    
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
 class SocialMediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialMedia
@@ -550,8 +528,6 @@ class SocialMediaSerializer(serializers.ModelSerializer):
         'url',
         ]
         read_only_fields = ['id', 'dentist_id']
-<<<<<<< HEAD
-=======
     def validate_platform(self, value):
         if value and (len(value) < 2 or len(value) > 150):
             raise serializers.ValidationError("Platform must be at least 2 characters long.")
@@ -560,7 +536,6 @@ class SocialMediaSerializer(serializers.ModelSerializer):
         if value and (len(value) < 2 or len(value) > 255):
             raise serializers.ValidationError("URL must be at least 2 characters long.")
         return value
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
 
 class EducationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -573,8 +548,6 @@ class EducationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'dentist_id']
 
-<<<<<<< HEAD
-=======
     def validate_year(self, value):
         current_year = timezone.now().year
         if value and (value < 1900 or value > current_year + 5):
@@ -591,8 +564,6 @@ class EducationSerializer(serializers.ModelSerializer):
              raise serializers.ValidationError("Institution must be at least 2 characters long.")
          return value
 
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
-
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
@@ -603,8 +574,6 @@ class SkillSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'dentist_id']
 
-<<<<<<< HEAD
-=======
     def validate_name(self, value):
         if value and (len(value) < 2 or len(value) > 50):
             raise serializers.ValidationError("Name must be at least 2 characters long.")
@@ -614,8 +583,6 @@ class SkillSerializer(serializers.ModelSerializer):
         if value and (len(value) < 2 or len(value) > 50):
             raise serializers.ValidationError("Category must be at least 2 characters long.")
         return value
-
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
@@ -628,8 +595,6 @@ class ServiceSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'dentist_id']
 
-<<<<<<< HEAD
-=======
     def validate_price(self, value):
         if value is not None and value < 0:
             raise serializers.ValidationError("Price cannot be negative.")
@@ -649,8 +614,6 @@ class ServiceSerializer(serializers.ModelSerializer):
              raise serializers.ValidationError("Service description must be between 2 and 255 characters long.")
          return value
 
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
-
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
@@ -660,9 +623,6 @@ class ArticleSerializer(serializers.ModelSerializer):
         'content',
         ]
         read_only_fields = ['id', 'dentist_id']
-<<<<<<< HEAD
-=======
-    
     def validate_title(self, value):
          if value and (len(value) < 2 or len(value) > 150):
              raise serializers.ValidationError("Article title must be between 2 and 150 characters long.")
@@ -672,7 +632,6 @@ class ArticleSerializer(serializers.ModelSerializer):
          if value and (len(value) < 2 or len(value) > 255):
              raise serializers.ValidationError("Article content must be between 2 and 255 characters long.")
          return value
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
 
 class AwardsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -686,8 +645,6 @@ class AwardsSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'dentist_id']
 
-<<<<<<< HEAD
-=======
     def validate_title(self, value):
          if value and (len(value) < 2 or len(value) > 150):
              raise serializers.ValidationError("Award title must be between 2 and 150 characters long.")
@@ -703,8 +660,6 @@ class AwardsSerializer(serializers.ModelSerializer):
              raise serializers.ValidationError("Award date must be in the past.")
          return value
 
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
-
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
@@ -718,8 +673,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'patient']
 
-<<<<<<< HEAD
-=======
     def validate_date(self, value):
         if value and value < timezone.now().date():
              raise serializers.ValidationError("Appointment date must be in the future.")
@@ -740,8 +693,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
     def validate_status(self, value):
          if value and (value not in ["pending", "confirmed", "cancelled"]):
              raise serializers.ValidationError("Appointment status must be between 2 and 255 characters long.")
-         return value    
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
+         return value
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -754,8 +706,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'dentist_id']
 
-<<<<<<< HEAD
-=======
     def validate_name(self, value):
          if value and (len(value) < 2 or len(value) > 150):
              raise serializers.ValidationError("Project name must be between 2 and 150 characters long.")
@@ -764,8 +714,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     def validate_description(self, value):
          if value and (len(value) < 2 or len(value) > 255):
              raise serializers.ValidationError("Project description must be between 2 and 255 characters long.")
-         return value    
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
+         return value
 
 class FAQSerializer(serializers.ModelSerializer):
     class Meta:
@@ -776,9 +725,6 @@ class FAQSerializer(serializers.ModelSerializer):
         'answer',
         ]
         read_only_fields = ['id', 'dentist_id']
-<<<<<<< HEAD
-=======
-    
     def validate_question(self, value):
          if value and (len(value) < 2 or len(value) > 255):
              raise serializers.ValidationError("FAQ question must be between 2 and 150 characters long.")
@@ -787,8 +733,7 @@ class FAQSerializer(serializers.ModelSerializer):
     def validate_answer(self, value):
          if value and (len(value) < 2 or len(value) > 255):
              raise serializers.ValidationError("FAQ answer must be between 2 and 255 characters long.")
-         return value    
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
+         return value
 
 class GallerySerializer(serializers.ModelSerializer):
     class Meta:
@@ -801,14 +746,10 @@ class GallerySerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'dentist_id', 'created_at']
 
-<<<<<<< HEAD
-=======
     def validate_description(self, value):
          if value and (len(value) < 2 or len(value) > 255):
              raise serializers.ValidationError("Gallery description must be between 2 and 255 characters long.")
          return value    
-
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212
 class CertificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certification
@@ -822,9 +763,6 @@ class CertificationSerializer(serializers.ModelSerializer):
         'image',
         ]
         read_only_fields = ['id', 'dentist_id']
-<<<<<<< HEAD
-=======
-    
     def validate_name(self, value):
          if value and (len(value) < 2 or len(value) > 150):
              raise serializers.ValidationError("Certification name must be between 2 and 150 characters long.")
@@ -849,4 +787,3 @@ class CertificationSerializer(serializers.ModelSerializer):
          if value and (len(value) < 2 or len(value) > 255):
              raise serializers.ValidationError("Certification credential URL must be between 2 and 255 characters long.")
          return value       
->>>>>>> d9f6ecded56012b89a9525d89e2ce95d8ab9f212

@@ -1,7 +1,7 @@
 from django.db import models
 from apps.users.models import User
 from apps.portofolio.models import DentistProfile
-from apps.clinic.models import ClinicProfile, ClinicDoctors, ClinicAppointment
+
 # Create your models here.
 
 # Patient Profile
@@ -34,7 +34,7 @@ class AITreatmentSuggestion(models.Model):
 
     # Doctor Review
     reviewed_by = models.ForeignKey(
-        ClinicDoctors, on_delete=models.SET_NULL, null=True, blank=True
+        DentistProfile, on_delete=models.SET_NULL, null=True, blank=True
     )
     VERDICT_CHOICES = [
         ("pending", "Pending Review"),
@@ -55,9 +55,9 @@ class AITreatmentSuggestion(models.Model):
 # Medical Record
 class MedicalRecord(models.Model):
     patient_id = models.ForeignKey(PatientProfile, on_delete=models.CASCADE, null=True)
-    clinic = models.ForeignKey(ClinicProfile, on_delete=models.SET_NULL, null=True)
+
     doctor_id = models.ForeignKey(DentistProfile, on_delete=models.CASCADE, null=True)
-    appointment = models.ForeignKey(ClinicAppointment,on_delete=models.SET_NULL, null=True, blank=True, related_name="medical_record")
+
     ai_suggestion = models.OneToOneField(AITreatmentSuggestion, on_delete=models.SET_NULL, null=True, blank=True, related_name="medical_record")
     date = models.DateField(null=True)
     diagnosis = models.CharField(max_length=255, null=True)

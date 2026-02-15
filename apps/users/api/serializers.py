@@ -3,8 +3,6 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
 from apps.users.models import (
     User,
-    Staff,
-    StaffRole
     )
 
 class UserSerializer(serializers.ModelSerializer):
@@ -72,27 +70,7 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class StaffSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Staff
-        fields = '__all__'
-    
-    def validate_hire_date(self, value):
-        if value > timezone.now().date():
-            raise serializers.ValidationError("Hire date cannot be in the future.")
-        return value
 
-class StaffRoleSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = StaffRole
-        fields = '__all__'
-    
-    def validate_name(self, value):
-        if value and not value.isalpha() and (len(value) > 255 or len(value) < 2 ):
-            raise serializers.ValidationError("Name must contain only letters and be between 2 and 255 characters long.")
-        return value
 
 
 class PasswordResetRequestSerializer(serializers.Serializer):

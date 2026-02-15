@@ -37,7 +37,6 @@ urlpatterns = [
         name="redoc",
     ),
     # API ENDPOINTS <3
-    path("api/clinic/", include("apps.clinic.api.urls")),
     path("api/users/", include("apps.users.api.urls")),
     path("api/patient/", include("apps.patient.api.urls")),
     path("api/portofolio/", include("apps.portofolio.api.urls")),

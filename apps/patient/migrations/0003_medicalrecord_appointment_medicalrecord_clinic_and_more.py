@@ -8,32 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("clinic", "0002_clinicappointment_clinic_and_more"),
+
         ("patient", "0002_patientdoctorrelationship"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name="medicalrecord",
-            name="appointment",
-            field=models.ForeignKey(
-                blank=True,
-                null=True,
-                on_delete=django.db.models.deletion.SET_NULL,
-                related_name="medical_record",
-                to="clinic.clinicappointment",
-            ),
-        ),
-        migrations.AddField(
-            model_name="medicalrecord",
-            name="clinic",
-            field=models.ForeignKey(
-                null=True,
-                on_delete=django.db.models.deletion.SET_NULL,
-                to="clinic.clinicprofile",
-            ),
-        ),
+
         migrations.AddField(
             model_name="medicalrecord",
             name="updated_at",
@@ -102,15 +83,8 @@ class Migration(migrations.Migration):
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
-                (
-                    "reviewed_by",
-                    models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        to="clinic.clinicdoctors",
-                    ),
-                ),
+
+
             ],
         ),
         migrations.AddField(

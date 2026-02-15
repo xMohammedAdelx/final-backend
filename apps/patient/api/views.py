@@ -91,7 +91,7 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
     serializer_class = MedicalRecordSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['patient_id','doctor_id','date','diagnosis','treatment','notes']
-    ordering_fields = ["clinic", "doctor", "date", "created_at"]
+    ordering_fields = ["doctor", "date", "created_at"]
     permission_classes = [permissions.IsAuthenticated, CanAccessMedicalRecord]
 
     def get_queryset(self):
@@ -100,11 +100,7 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
             return MedicalRecord.objects.none()
         if user.is_superuser:
             return MedicalRecord.objects.all()
-        try:
-            if user.staff.is_active:
-                return MedicalRecord.objects.filter(clinic=user.staff.clinic)
-        except AttributeError:
-            pass
+
         patient_records = MedicalRecord.objects.filter(patient_id__user_id=user)
         doctor_records = MedicalRecord.objects.filter(doctor_id__user_id=user)
         return (patient_records | doctor_records).distinct()
@@ -119,12 +115,7 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def perform_create(self, serializer):
-        clinic = None
-        try:
-            if self.request.user.staff.is_active:
-                clinic = self.request.user.staff.clinic
-        except AttributeError:
-            pass
+
         patient_id = self.request.data.get("patient")
         if not patient_id:
             # If patient is not provided, we can't create a record
@@ -134,7 +125,7 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
 
             raise ValidationError({"patient": "This field is required."})
 
-        serializer.save(patient_id=patient_id, clinic=clinic)
+        serializer.save(patient_id=patient_id)
 
     @action(detail=True, methods=['post'])
     def add_attachment(self, request, pk=None):
@@ -183,14 +174,7 @@ class AITreatmentSuggestionViewSet(viewsets.ModelViewSet):
         if user.is_superuser:
             return AITreatmentSuggestion.objects.all()
 
-        # Staff sees suggestions for their clinic's patients or that they reviewed
-        try:
-            if user.staff.is_active:
-                # This logic can be expanded based on specific needs
-                # For now, let's allow staff to see all suggestions to facilitate review
-                return AITreatmentSuggestion.objects.all()
-        except AttributeError:
-            pass
+
 
         # Patients see ONLY their own suggestions
         return AITreatmentSuggestion.objects.filter(patient=user)

@@ -17,8 +17,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from .serializers import (
     UserSerializer,
-    StaffSerializer,
-    StaffRoleSerializer,
     PasswordResetRequestSerializer,
     PasswordResetConfirmSerializer,
     EmailVerificationRequestSerializer,
@@ -26,15 +24,7 @@ from .serializers import (
     EmailTokenObtainPairSerializer,
     )
 from apps.users.models import (
-    User,
-    Staff,
-    StaffRole
-    )
-from apps.users.permissions import (
-    IsOwnerOrAdmin,
-    IsStaffOwnerOrAdmin,
-    CanManageStaffRoles,
-    CanCreateStaff
+    User
 )
 
 
@@ -131,102 +121,7 @@ class UserViewSet(viewsets.ModelViewSet):
         )
 
     
-class StaffViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for Staff model
-    Manages staff members and their clinic assignments
-    """
-    queryset = Staff.objects.all()
-    serializer_class = StaffSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['user__username', 'user__email', 'user__first_name', 'user__last_name']
-    ordering_fields = ['user__username', 'user__email', 'hire_date', 'created_at']
-    filterset_fields = ['clinic', 'role', 'is_active']
 
-    def get_permissions(self):
-        if self.action in ['list', 'retrieve']:
-            permission_classes = [IsAuthenticated]
-        elif self.action == 'create':
-            permission_classes = [IsAuthenticated, CanCreateStaff]
-        else:
-            permission_classes = [IsAuthenticated, IsStaffOwnerOrAdmin]
-        return [permission() for permission in permission_classes]
-
-    def get_queryset(self):
-        """
-        Return all staff for superusers
-        Return staff from same clinic for staff members
-        """
-        user = self.request.user
-        if user.is_superuser:
-            return Staff.objects.all()
-        
-        try:
-            staff = user.staff
-            # Staff members can see colleagues from their clinic
-            return Staff.objects.filter(clinic=staff.clinic)
-        except:
-            return Staff.objects.none()
-
-    @action(detail=False, methods=['get'])
-    def me(self, request):
-        """
-        Get current user's staff profile
-        """
-        try:
-            staff = Staff.objects.get(user=request.user)
-            serializer = self.get_serializer(staff)
-            return Response(serializer.data)
-        except Staff.DoesNotExist:
-            return Response(
-                {"detail": "No staff profile found for the current user."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-    @action(detail=True, methods=['post'])
-    def deactivate(self, request, pk=None):
-        """
-        Deactivate a staff member
-        """
-        staff = self.get_object()
-        staff.is_active = False
-        staff.save()
-        return Response(
-            {"detail": "Staff member deactivated successfully."},
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['post'])
-    def activate(self, request, pk=None):
-        """
-        Activate a staff member
-        """
-        staff = self.get_object()
-        staff.is_active = True
-        staff.save()
-        return Response(
-            {"detail": "Staff member activated successfully."},
-            status=status.HTTP_200_OK
-        )
-
-
-class StaffRoleViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for StaffRole model
-    Manages different staff roles/positions
-    """
-    queryset = StaffRole.objects.all()
-    serializer_class = StaffRoleSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name', 'description']
-    ordering_fields = ['name', 'created_at']
-    permission_classes = [CanManageStaffRoles]
-
-    def get_queryset(self):
-        """
-        All authenticated staff can view roles
-        """
-        return StaffRole.objects.all()
 
 
 class PasswordResetRequestView(APIView):

@@ -11,11 +11,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name="staffrole",
-            name="name",
-            field=models.CharField(max_length=67),
-        ),
+
         migrations.AlterField(
             model_name="user",
             name="profile_picture",

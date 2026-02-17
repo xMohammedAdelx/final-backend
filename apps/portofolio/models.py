@@ -54,7 +54,7 @@ class SocialMedia(models.Model):
     def __str__(self):
         return self.platform if self.platform else "Social Media"
 
-# Education
+# Education ***
 class Education(models.Model):
     dentist_id = models.ForeignKey(DentistProfile, on_delete=models.CASCADE, null=True)
     degree = models.CharField(max_length=100, null=True)
@@ -82,7 +82,7 @@ class Service(models.Model):
         return self.name if self.name else "Service"
 
 
-# Article
+# Article ***
 class Article(models.Model):
     dentist_id = models.ForeignKey(DentistProfile, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=255, null=True)
@@ -92,7 +92,7 @@ class Article(models.Model):
     def __str__(self):
         return self.title if self.title else "Article"
 
-# Awards
+# Awards ***
 class Awards(models.Model):
     dentist_id = models.ForeignKey(DentistProfile, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=255, null=True)
@@ -113,7 +113,7 @@ class Appointment(models.Model):
     def __str__(self):
         return self.patient.username if self.patient and self.patient.username else "Appointment"
 
-# Project
+# Project ***
 class Project(models.Model):
     dentist_id = models.ForeignKey(DentistProfile, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=150, null=True)
@@ -123,7 +123,7 @@ class Project(models.Model):
         return self.name if self.name else "Project"
 
 
-# FAQ
+# FAQ ***
 class FAQ(models.Model):
     dentist_id = models.ForeignKey(DentistProfile, on_delete=models.CASCADE, null=True)
     question = models.CharField(max_length=255, null=True)
@@ -140,7 +140,7 @@ class Gallery(models.Model):
     def __str__(self):
         return self.image if self.image else "Gallery"
 
-# Certification
+# Certification ***
 class Certification(models.Model):
     dentist_id = models.ForeignKey(DentistProfile, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=150, null=True)

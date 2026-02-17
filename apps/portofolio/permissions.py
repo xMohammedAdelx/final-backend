@@ -20,8 +20,8 @@ class IsDentistOwnerOfRelatedObject(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # obj has a dentist_id field pointing to DentistProfile
         user = request.user
-        # Staff/Admin can access everything
-        if user.is_staff or user.is_superuser:
+        # Admin can access everything
+        if user.is_superuser:
             return True
         # Check if the related dentist profile belongs to this user
         if hasattr(obj, "dentist_id") and obj.dentist_id:
@@ -34,13 +34,13 @@ class CanAccessAppointment(permissions.BasePermission):
     Custom permission to allow:
     - Patient to view their own appointments
     - Dentist to view appointments with them
-    - Staff/Admin to view all appointments
+    - Admin to view all appointments
     """
     def has_object_permission(self, request, view, obj):
         # obj is an Appointment instance
         user = request.user
-        # Staff/Admin can access all
-        if user.is_staff or user.is_superuser:
+        # Admin can access all
+        if user.is_superuser:
             return True
         # Check if user is the patient
         if obj.patient == user:
@@ -68,8 +68,8 @@ class IsTestimonialOwnerOrAdmin(permissions.BasePermission):
         # Read permissions allowed to everyone
         if request.method in permissions.SAFE_METHODS:
             return True
-        # Admin/staff can do anything
-        if request.user.is_staff or request.user.is_superuser:
+        # Admin can do anything
+        if request.user.is_superuser:
             return True
         # Check if the user is the patient who created this testimonial
         if hasattr(obj, "patient") and obj.patient:
@@ -94,8 +94,8 @@ class IsPublicReadOrDentistAdminWrite(permissions.BasePermission):
         if not (request.user and request.user.is_authenticated):
             return False
         
-        # Admin/staff can do anything
-        if request.user.is_staff or request.user.is_superuser:
+        # Admin can do anything
+        if request.user.is_superuser:
             return True
         
         # Check if user has a dentist profile
@@ -108,8 +108,8 @@ class IsPublicReadOrDentistAdminWrite(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         
-        # Admin/staff can do anything
-        if request.user.is_staff or request.user.is_superuser:
+        # Admin can do anything
+        if request.user.is_superuser:
             return True
         
         # Check if user has a dentist profile and owns this object

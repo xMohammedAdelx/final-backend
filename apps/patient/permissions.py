@@ -8,7 +8,7 @@ class IsPatientOwner(permissions.BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         user = request.user
-        if user.is_staff or user.is_superuser:
+        if user.is_superuser:
             return True
         return obj.user_id == request.user
 
@@ -20,8 +20,8 @@ class CanAccessMedicalRecord(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # obj is a MedicalRecord instance
         user = request.user
-        # If user is staff or superuser, allow access
-        if user.is_staff or user.is_superuser:
+        # If user is superuser, allow access
+        if user.is_superuser:
             return True
         # Check if user is the patient
         if obj.patient_id and obj.patient_id.user_id == user:
@@ -34,13 +34,13 @@ class CanAccessMedicalRecord(permissions.BasePermission):
 
 class CanAccessPrescription(permissions.BasePermission):
     """
-    Custom permission to allow patients, staff/admin and their doctor to view their own prescriptions
+    Custom permission to allow patients, admin and their doctor to view their own prescriptions
     """
     def has_object_permission(self, request, view, obj):
         # obj is a Prescription instance
         user = request.user
-        # If user is staff or superuser, allow access
-        if user.is_staff or user.is_superuser:
+        # If user is superuser, allow access
+        if user.is_superuser:
             return True
         # Get the medical record associated with this prescription
         medical_record = obj.medical_record
@@ -56,12 +56,12 @@ class CanAccessPrescription(permissions.BasePermission):
 
 class CanAccessPatientFullHistory(permissions.BasePermission):
     """
-    Custom permission to allow patients, staff/admin and their assigned doctors 
+    Custom permission to allow patients, admin and their assigned doctors 
     to view the full patient history
     """
     def has_object_permission(self, request, view, obj):
         user = request.user
-        if user.is_staff or user.is_superuser:
+        if user.is_superuser:
             return True
         elif obj.user_id == request.user:
             return True
@@ -83,7 +83,7 @@ class CanManageDoctorAssignment(permissions.BasePermission):
         user = request.user
         if not user.is_authenticated:
             return False
-        if user.is_staff or user.is_superuser:
+        if user.is_superuser:
             return True
         if request.method in permissions.SAFE_METHODS:
             return True
@@ -94,7 +94,7 @@ class CanManageDoctorAssignment(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Called only when accessing a specific object
         user = request.user
-        if user.is_staff or user.is_superuser:
+        if user.is_superuser:
             return True
         if request.method in permissions.SAFE_METHODS:
             if (obj.patient_id and obj.patient_id.user_id == user) or (

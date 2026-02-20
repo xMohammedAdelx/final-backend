@@ -62,3 +62,6 @@ class Gallery(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return self.image if self.image else "Gallery"
+#
+#
+#67 

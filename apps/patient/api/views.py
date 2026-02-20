@@ -1,9 +1,14 @@
+from django.conf import settings
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import status
+from apps.patient.api.services import get_ai_prediction
 from apps.patient.models import (
     AITreatmentSuggestion,
     PatientProfile,
@@ -335,3 +340,29 @@ class PatientDoctorRelationshipViewSet(viewsets.ModelViewSet):
                     "detail": "You can only create relationships for yourself."
                 }
             )
+class AnalyzeDentalImageView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        image_file = request.FILES.get('image')
+        
+        if not image_file:
+            return Response({"error": "No image provided"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        
+        ai_result = get_ai_prediction(image_file)
+        
+        if "error" in ai_result:
+            error_msg = ai_result["error"]
+            # In DEBUG mode, return the actual error to help troubleshoot
+            if getattr(settings, "DEBUG", False):
+                return Response(
+                    {"error": "AI Model failed to process image", "detail": error_msg},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                )
+            return Response({"error": "AI Model failed to process image"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            
+        return Response({
+            "message": "Image analyzed successfully",
+            "ai_prediction": ai_result
+        }, status=status.HTTP_200_OK)

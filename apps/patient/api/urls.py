@@ -5,7 +5,8 @@ from apps.patient.api.views import (
     MedicalRecordViewSet,
     PrescriptionViewSet,
     PatientDoctorRelationshipViewSet,
-    AITreatmentSuggestionViewSet
+    AITreatmentSuggestionViewSet,
+    AnalyzeDentalImageView
     )
 
 router = DefaultRouter()
@@ -17,4 +18,5 @@ router.register('ai-suggestions', AITreatmentSuggestionViewSet, basename='ai-sug
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('analyze-dental-image/', AnalyzeDentalImageView.as_view(), name='analyze-dental-image'),
 ]

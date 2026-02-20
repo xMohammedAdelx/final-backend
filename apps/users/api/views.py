@@ -26,7 +26,7 @@ from .serializers import (
 from apps.users.models import (
     User
 )
-
+from apps.users.permissions import IsOwnerOrAdmin
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -119,11 +119,6 @@ class UserViewSet(viewsets.ModelViewSet):
             {"detail": "Password changed successfully."},
             status=status.HTTP_200_OK
         )
-
-    
-
-
-
 class PasswordResetRequestView(APIView):
     """
     Request a password reset email.

@@ -16,10 +16,9 @@ from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
 
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env', override=True)
 
 
 # Quick-start development settings - unsuitable for production
@@ -93,12 +92,22 @@ WSGI_APPLICATION = 'dentist.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DATABASE_URL = os.getenv('DATABASE_URL', '').strip()
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -244,3 +253,7 @@ else:
 
 # FRONTEND URL (for password reset links)
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+
+# AI Model URL (for dental image analysis)
+_ai_url = os.getenv('AI_MODEL_URL', 'http://127.0.0.1:9000/api/v1/predict').strip()
+AI_MODEL_URL = _ai_url or 'http://127.0.0.1:9000/api/v1/predict'

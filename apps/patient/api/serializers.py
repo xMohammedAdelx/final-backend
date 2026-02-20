@@ -3,10 +3,9 @@ from django.utils import timezone
 from apps.patient.models import (
     PatientProfile, 
     MedicalRecord, 
-    Prescription, 
     MedicalAttachment, 
     PatientDoctorRelationship,
-    AITreatmentSuggestion
+    AIResult
 )
 from apps.portofolio.models import DentistProfile
 
@@ -41,29 +40,15 @@ class PatientProfileSerializer(serializers.ModelSerializer):
 
     def validate_date_of_birth(self, value):
         if value and value >= timezone.now().date():
-             raise serializers.ValidationError("Date of birth must be in the past.")
+            raise serializers.ValidationError("Date of birth must be in the past.")
         return value
 
     def validate_gender(self, value):
         if value and value not in ["male", "female", "M", "F", "Male", "Female"]:
-             raise serializers.ValidationError("Gender must be either 'male' or 'female'.")
+            raise serializers.ValidationError("Gender must be either 'male' or 'female'.")
         return value
 
-class PrescriptionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Prescription
-        fields = '__all__'
-        read_only_fields = ['id', 'created_at']
 
-    def validate_duration(self, value):
-        if value is not None and value <= 0:
-            raise serializers.ValidationError("Duration must be a positive integer.")
-        return value
-
-    def validate_prescribed_date(self, value):
-        if value and value > timezone.now().date():
-             raise serializers.ValidationError("Prescribed date cannot be in the future.")
-        return value
 
 class MedicalAttachmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -84,18 +69,24 @@ class MedicalRecordSerializer(serializers.ModelSerializer):
 
     def validate_date(self, value):
         if value and value > timezone.now().date():
-             raise serializers.ValidationError("Medical record date cannot be in the future.")
+            raise serializers.ValidationError("Medical record date cannot be in the future.")
         return value
 
     def validate_diagnosis(self, value):
         if value and (len(value) < 3 or len(value) > 255):
-             raise serializers.ValidationError("Diagnosis must be at least 3 characters long and less than 255 characters.")
+            raise serializers.ValidationError("Diagnosis must be at least 3 characters long and less than 255 characters.")
         return value
 
     def validate_treatment(self, value):
         if value and (len(value) < 3 or len(value) > 255):
-             raise serializers.ValidationError("Treatment must be at least 3 characters long and less than 255 characters.")
+            raise serializers.ValidationError("Treatment must be at least 3 characters long and less than 255 characters.")
         return value
+
+class AIResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AIResult
+        fields = ['id', 'predicted_class', 'confidence_score', 'probabilities', 'created_at']
+        read_only_fields = ['id', 'patient', 'created_at']
 
 class PatientDoctorRelationshipSerializer(serializers.ModelSerializer):
     class Meta:
@@ -105,32 +96,27 @@ class PatientDoctorRelationshipSerializer(serializers.ModelSerializer):
 
     def validate_status(self, value):
         if value and value not in ["active", "inactive", "pending", "Active", "Inactive", "Pending"]:
-             raise serializers.ValidationError("Status must be either 'active' or 'inactive'.")
+            raise serializers.ValidationError("Status must be either 'active' or 'inactive'.")
         return value
-
-class AITreatmentSuggestionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AITreatmentSuggestion
-        fields = '__all__'
-        read_only_fields = ['id', 'created_at']
 
 class MedicalRecordDetailSerializer(serializers.ModelSerializer):
     """
     Detailed serializer for medical records, including prescriptions and attachments.
     """
-    prescriptions = serializers.SerializerMethodField()
+    ai_result = serializers.SerializerMethodField()
     attachments = serializers.SerializerMethodField()
     
     class Meta:
         model = MedicalRecord
         fields = '__all__'
-
-    def get_prescriptions(self, obj):
-        items = Prescription.objects.filter(medical_record=obj)
-        return PrescriptionSerializer(items, many=True).data
+    
+    def get_ai_result(self, obj):
+        if obj.ai_result is None:
+            return None
+        return AIResultSerializer(obj.ai_result).data
 
     def get_attachments(self, obj):
-        items = MedicalAttachment.objects.filter(record=obj)
+        items = MedicalAttachment.objects.filter(medical_record=obj)
         return MedicalAttachmentSerializer(items, many=True).data
 
 class PatientFullHistorySerializer(serializers.Serializer):
@@ -155,21 +141,16 @@ class PatientFullHistorySerializer(serializers.Serializer):
         return doctors
 
     def get_medical_records(self, obj):
-        records = MedicalRecord.objects.filter(patient_id=obj).order_by("-date")
+        records = MedicalRecord.objects.filter(patient_id=obj).order_by("-created_at")
         return MedicalRecordDetailSerializer(records, many=True).data
 
     def get_summary(self, obj):
         records = MedicalRecord.objects.filter(patient_id=obj)
-        total_prescriptions = Prescription.objects.filter(
-            medical_record__patient_id=obj
-        ).count()
-
-        dates = records.values_list("date", flat=True)
-        dates = [d for d in dates if d is not None]
+        dates = records.values_list("created_at", flat=True)
+        dates = [d.date() if d else None for d in dates if d is not None]
 
         return {
             "total_visits": records.count(),
-            "total_prescriptions": total_prescriptions,
             "first_visit": min(dates) if dates else None,
             "last_visit": max(dates) if dates else None,
         }

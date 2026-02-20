@@ -10,24 +10,23 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 from apps.patient.api.services import get_ai_prediction
 from apps.patient.models import (
-    AITreatmentSuggestion,
+    AIResult,
     PatientProfile,
     MedicalRecord,
-    Prescription,
+    MedicalAttachment,
     PatientDoctorRelationship
     )
 from apps.patient.api.serializers import (
     PatientProfileSerializer,
     MedicalRecordSerializer,
-    PrescriptionSerializer,
+    MedicalAttachmentSerializer,
     PatientDoctorRelationshipSerializer,
     PatientFullHistorySerializer,
-    AITreatmentSuggestionSerializer
+    AIResultSerializer
     )
 from apps.patient.permissions import (
     IsPatientOwner,
     CanAccessMedicalRecord,
-    CanAccessPrescription,
     CanAccessPatientFullHistory,
     CanManageDoctorAssignment
     )
@@ -95,8 +94,8 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
     queryset = MedicalRecord.objects.all()
     serializer_class = MedicalRecordSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['patient_id','doctor_id','date','diagnosis','treatment','notes']
-    ordering_fields = ["doctor", "date", "created_at"]
+    search_fields = ['patient_id','ai_result','created_at','updated_at']
+    ordering_fields = ["patient_id", "ai_result", "created_at", "updated_at"]
     permission_classes = [permissions.IsAuthenticated, CanAccessMedicalRecord]
 
     def get_queryset(self):
@@ -107,8 +106,7 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
             return MedicalRecord.objects.all()
 
         patient_records = MedicalRecord.objects.filter(patient_id__user_id=user)
-        doctor_records = MedicalRecord.objects.filter(doctor_id__user_id=user)
-        return (patient_records | doctor_records).distinct()
+        return patient_records
 
     def get_permissions(self):
         if self.action in ["create", "update", "partial_update", "destroy"]:
@@ -120,17 +118,23 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def perform_create(self, serializer):
+        patient_profile_id = self.request.data.get("patient_id") or self.request.data.get("patient")
+        if not patient_profile_id:
+            raise ValidationError({"patient_id": "This field is required."})
 
-        patient_id = self.request.data.get("patient")
-        if not patient_id:
-            # If patient is not provided, we can't create a record
-            # But 'patient' is a required field on the model.
-            # We should probably raise a validation error if it's missing from the request payload
-            # even if the serializer ignores it due to read_only.
+        patient_profile = PatientProfile.objects.filter(pk=patient_profile_id).first()
+        if not patient_profile:
+            raise ValidationError({"patient_id": "Invalid patient profile."})
+        if not patient_profile.user_id:
+            raise ValidationError({"patient_id": "Patient profile has no linked user."})
 
-            raise ValidationError({"patient": "This field is required."})
-
-        serializer.save(patient_id=patient_id)
+        ai_result = AIResult.objects.create(
+            patient=patient_profile.user_id,
+            prediction=self.request.data.get("prediction"),
+            confidence_score=self.request.data.get("confidence_score"),
+            probabilities=self.request.data.get("probabilities")
+        )
+        serializer.save(patient_id=patient_profile, ai_result=ai_result)
 
     @action(detail=True, methods=['post'])
     def add_attachment(self, request, pk=None):
@@ -146,7 +150,7 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
             return Response({"detail": "No file_url provided."}, status=status.HTTP_400_BAD_REQUEST)
 
         attachment = MedicalAttachment.objects.create(
-            record=record,
+            medical_record=record,
             file_url=file_url,
             description=description
         )
@@ -154,38 +158,32 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
             MedicalAttachmentSerializer(attachment).data, 
             status=status.HTTP_201_CREATED
         )
-    @action(detail=True, methods=["get"])
-    def prescriptions(self, request, pk=None):
-        medical_record = self.get_object()
-        prescriptions = Prescription.objects.filter(medical_record=medical_record)
-        serializer = PrescriptionSerializer(prescriptions, many=True)
-        return Response(serializer.data)
 
 
-class AITreatmentSuggestionViewSet(viewsets.ModelViewSet):
+class AIResultViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for AI Treatment Suggestions
+    ViewSet for AI Results
     """
-    serializer_class = AITreatmentSuggestionSerializer
+    serializer_class = AIResultSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["doctor_verdict", "created_at"]
+    filterset_fields = ["predicted_class", "confidence_score", "created_at"]
 
     def get_queryset(self):
         user = self.request.user
         if not user.is_authenticated:
-            return AITreatmentSuggestion.objects.none()
+            return AIResult.objects.none()
 
         # Superuser sees all
         if user.is_superuser:
-            return AITreatmentSuggestion.objects.all()
+            return AIResult.objects.all()
 
 
 
-        # Patients see ONLY their own suggestions
-        return AITreatmentSuggestion.objects.filter(patient=user)
+        # Patients see ONLY their own results
+        return AIResult.objects.filter(patient=user)
 
     def perform_create(self, serializer):
-        # Allow patients to create suggestions (trigger AI) or doctors
+        # Allow patients to create results (trigger AI) or doctors
         # If user is patient, set patient field automatically
         if not self.request.user.is_staff and not self.request.user.is_superuser:
             serializer.save(patient=self.request.user)
@@ -194,11 +192,9 @@ class AITreatmentSuggestionViewSet(viewsets.ModelViewSet):
             # because 'patient' is read_only in the serializer.
             patient_id = self.request.data.get("patient")
             if not patient_id:
-                from rest_framework.exceptions import ValidationError
-
                 raise ValidationError(
                     {
-                        "patient": "This field is required for staff creating suggestions."
+                        "patient": "This field is required for staff creating results."
                     }
                 )
 
@@ -207,27 +203,16 @@ class AITreatmentSuggestionViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     def review(self, request, pk=None):
         """
-        Doctor reviews the AI suggestion.
+        Doctor reviews the AI result.
         """
-        suggestion = self.get_object()
+        result = self.get_object()
 
         # Ensure only doctors/staff can review
         if not (request.user.is_staff or request.user.is_superuser):
             return Response(
-                {"detail": "Only doctors can review suggestions."},
+                {"detail": "Only doctors can review results."},
                 status=status.HTTP_403_FORBIDDEN,
             )
-
-        verdict = request.data.get("verdict")
-        notes = request.data.get("notes", "")
-
-        if verdict not in ["approved", "rejected", "modified"]:
-            return Response(
-                {"detail": "Invalid verdict."}, status=status.HTTP_400_BAD_REQUEST
-            )
-
-        suggestion.doctor_verdict = verdict
-        suggestion.doctor_notes = notes
 
         # Optionally link the doctor reviewing it
         try:
@@ -239,53 +224,9 @@ class AITreatmentSuggestionViewSet(viewsets.ModelViewSet):
         except:
             pass
 
-        suggestion.save()
+        result.save()
 
-        return Response(AITreatmentSuggestionSerializer(suggestion).data)
-
-
-class PrescriptionViewSet(viewsets.ModelViewSet):
-    queryset = Prescription.objects.all()
-    serializer_class = PrescriptionSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['medical_record','medicine_name','dosage','duration','instructions','prescribed_date']
-    ordering_fields = ['prescribed_date','created_at']
-
-    permission_classes = [permissions.IsAuthenticated, CanAccessPrescription]
-
-    def get_queryset(self):
-
-        user = self.request.user
-
-        if user.is_staff or user.is_superuser:
-            return Prescription.objects.all()
-        # Get prescriptions where user is the patient
-        patient_prescriptions = Prescription.objects.filter(
-            medical_record__patient_id__user_id=user
-        )
-        # Get prescriptions where user is the prescribing doctor
-        doctor_prescriptions = Prescription.objects.filter(
-            medical_record__doctor_id__user_id=user
-        )
-        return (patient_prescriptions | doctor_prescriptions).distinct()
-
-    def get_permissions(self):
-
-        if self.action in ["create", "update", "partial_update", "destroy"]:
-            # Only doctors and staff can modify prescriptions
-            permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
-        else:
-            # Anyone authenticated can view (filtered by get_queryset)
-            permission_classes = [permissions.IsAuthenticated, CanAccessPrescription]
-        return [permission() for permission in permission_classes]
-
-    @action(detail=True, methods=["get"])
-    def medical_record(self, request, pk=None):
-        prescription = self.get_object()
-        medical_record = MedicalRecord.objects.filter(prescription=prescription)
-        serializer = MedicalRecordSerializer(medical_record, many=True)
-        return Response(serializer.data)
-
+        return Response(AIResultSerializer(result).data)
 
 class PatientDoctorRelationshipViewSet(viewsets.ModelViewSet):
     queryset = PatientDoctorRelationship.objects.all()
@@ -341,28 +282,64 @@ class PatientDoctorRelationshipViewSet(viewsets.ModelViewSet):
                 }
             )
 class AnalyzeDentalImageView(APIView):
+    """
+    Upload a dental image, get AI prediction, and optionally save to AIResult + MedicalRecord.
+    Requires authentication. Saves automatically if the user has a PatientProfile.
+    """
     parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         image_file = request.FILES.get('image')
-        
+        save_to_record = request.data.get('save', True)  # Default: save to DB
+
         if not image_file:
             return Response({"error": "No image provided"}, status=status.HTTP_400_BAD_REQUEST)
-            
-        
-        ai_result = get_ai_prediction(image_file)
-        
-        if "error" in ai_result:
-            error_msg = ai_result["error"]
-            # In DEBUG mode, return the actual error to help troubleshoot
+
+        ai_prediction = get_ai_prediction(image_file)
+
+        if "error" in ai_prediction:
+            error_msg = ai_prediction["error"]
             if getattr(settings, "DEBUG", False):
                 return Response(
                     {"error": "AI Model failed to process image", "detail": error_msg},
                     status=status.HTTP_503_SERVICE_UNAVAILABLE,
                 )
             return Response({"error": "AI Model failed to process image"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
-            
+
+        # Extract AI output (matches your AI model: predicted_class, confidence, probabilities)
+        predicted_class = ai_prediction.get("predicted_class") or ai_prediction.get("prediction") or ai_prediction.get("diagnosis")
+        confidence_score = ai_prediction.get("confidence") or ai_prediction.get("confidence_score")
+        probabilities = ai_prediction.get("probabilities") or ai_prediction.get("probs")
+
+        if save_to_record:
+            try:
+                patient_profile = PatientProfile.objects.get(user_id=request.user)
+            except PatientProfile.DoesNotExist:
+                return Response(
+                    {"error": "Create a patient profile first to save results."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            ai_result = AIResult.objects.create(
+                patient=request.user,
+                predicted_class=predicted_class,
+                confidence_score=confidence_score,
+                probabilities=probabilities,
+            )
+            medical_record = MedicalRecord.objects.create(
+                patient_id=patient_profile,
+                ai_result=ai_result,
+            )
+
+            return Response({
+                "message": "Image analyzed and saved successfully",
+                "ai_prediction": ai_prediction,
+                "ai_result_id": ai_result.id,
+                "medical_record_id": medical_record.id,
+            }, status=status.HTTP_201_CREATED)
+
         return Response({
             "message": "Image analyzed successfully",
-            "ai_prediction": ai_result
+            "ai_prediction": ai_prediction,
         }, status=status.HTTP_200_OK)

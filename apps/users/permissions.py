@@ -7,10 +7,10 @@ class IsOwnerOrAdmin(permissions.BasePermission):
     admin can access all profiles
     """
     def has_object_permission(self, request, view, obj):
-        # Admin can access everything
+        # Admin can access everything <3
         if request.user.is_superuser:
             return True
-        # Users can only access their own profile
+        # Users can only access their own profile <3    
         return obj == request.user
 
 

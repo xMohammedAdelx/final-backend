@@ -140,21 +140,21 @@ class PasswordResetRequestView(APIView):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            # Don't reveal if email exists or not (security)
+            # Don't reveal if email exists or not (security) <3
             return Response(
                 {"message": "If an account with this email exists, a reset link has been sent."},
                 status=status.HTTP_200_OK
             )
 
-        # Generate token
+        # Generate token <3
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
 
-        # Build reset URL for frontend
+        # Build reset URL for frontend <3
         frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
         reset_url = f"{frontend_url}/reset-password?uid={uid}&token={token}"
 
-        # Send email
+        # Send email <3
         context = {
             'user': user,
             'reset_url': reset_url,

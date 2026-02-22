@@ -173,23 +173,15 @@ class AIResultViewSet(viewsets.ModelViewSet):
         if not user.is_authenticated:
             return AIResult.objects.none()
 
-        # Superuser sees all
         if user.is_superuser:
             return AIResult.objects.all()
 
-
-
-        # Patients see ONLY their own results
         return AIResult.objects.filter(patient=user)
 
     def perform_create(self, serializer):
-        # Allow patients to create results (trigger AI) or doctors
-        # If user is patient, set patient field automatically
         if not self.request.user.is_staff and not self.request.user.is_superuser:
             serializer.save(patient=self.request.user)
         else:
-            # For staff/doctors, they must provide the patient ID in the request body
-            # because 'patient' is read_only in the serializer.
             patient_id = self.request.data.get("patient")
             if not patient_id:
                 raise ValidationError(
@@ -295,11 +287,9 @@ class AnalyzeDentalImageView(APIView):
         if not image_file:
             return Response({"error": "No image provided"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 1. Save to uploads
         saved_path, relative_path = save_dental_image(image_file)
         image_path_url = f"{settings.UPLOADS_URL.rstrip('/')}/{relative_path}"
 
-        # 2. Save path to DB (MedicalRecord + MedicalAttachment)
         try:
             patient_profile = PatientProfile.objects.get(user_id=request.user)
         except PatientProfile.DoesNotExist:
@@ -317,7 +307,6 @@ class AnalyzeDentalImageView(APIView):
             description="Dental analysis image",
         )
 
-        # 3. Send to AI automatically
         ai_prediction = get_ai_prediction(saved_path)
 
         if "error" in ai_prediction:
@@ -329,7 +318,6 @@ class AnalyzeDentalImageView(APIView):
                 )
             return Response({"error": "AI Model failed to process image"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-        # 4. Link AI result
         predicted_class = ai_prediction.get("predicted_class") or ai_prediction.get("prediction") or ai_prediction.get("diagnosis")
         confidence_score = ai_prediction.get("confidence") or ai_prediction.get("confidence_score")
         probabilities = ai_prediction.get("probabilities") or ai_prediction.get("probs")
@@ -342,11 +330,16 @@ class AnalyzeDentalImageView(APIView):
         medical_record.ai_result = ai_result
         medical_record.save()
 
-        # 5. Response
+        ai_result_data = AIResultSerializer(ai_result).data
+
         return Response({
             "message": "Image analyzed and saved successfully",
             "ai_prediction": ai_prediction,
             "ai_result_id": ai_result.id,
             "medical_record_id": medical_record.id,
             "image_path": image_path_url,
+            "description": ai_result_data["description"],
+            "suggestion": ai_result_data["suggestion"],
+            "severity": ai_result_data.get("severity", "green"),
+            "ai_result": ai_result_data,
         }, status=status.HTTP_201_CREATED)

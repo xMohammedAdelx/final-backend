@@ -45,9 +45,9 @@ class UserSerializer(serializers.ModelSerializer):
         user = User(**validated_data)
         
         if password:
-            user.set_password(password)  # This hashes the password
+            user.set_password(password)  # This hashes the password <3
         else:
-            # Generate a random password if none provided
+            # Generate a random password if none provided <3
             user.set_unusable_password()
         
         user.save()
@@ -59,13 +59,13 @@ class UserSerializer(serializers.ModelSerializer):
         """
         password = validated_data.pop('password', None)
         
-        # Update other fields
+        # Update other fields <3
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         
-        # Only update password if provided
+        # Only update password if provided <3
         if password:
-            instance.set_password(password)  # This hashes the password
+            instance.set_password(password)  # This hashes the password <3  
         
         instance.save()
         return instance
@@ -119,15 +119,15 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Replace 'username' field with 'email' in the serializer
+        # Replace 'username' field with 'email' in the serializer <3
         self.fields['email'] = serializers.CharField(
             help_text="User's email address or username"
         )
-        # Remove the default username field if it exists
+        # Remove the default username field if it exists <3
         self.fields.pop('username', None)
 
     def validate(self, attrs):
-        # Get credentials
+        # Get credentials <3
         email_or_username = attrs.get('email')
         password = attrs.get('password')
 
@@ -136,7 +136,7 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
                 'Must include "email" and "password".'
             )
 
-        # Authenticate using email or username (via our custom backend)
+        # Authenticate using email or username (via our custom backend) <3
         user = authenticate(
             request=self.context.get('request'),
             username=email_or_username,
@@ -153,7 +153,7 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
                 'User account is disabled.'
             )
 
-        # Generate tokens
+        # Generate tokens <3
         refresh = self.get_token(user)
 
         data = {
@@ -168,7 +168,7 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
         from rest_framework_simplejwt.tokens import RefreshToken
         token = RefreshToken.for_user(user)
         
-        # Add custom claims to the token
+        # Add custom claims to the token <3
         token['email'] = user.email
         token['username'] = user.username
         token['is_email_verified'] = user.is_email_verified

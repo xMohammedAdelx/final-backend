@@ -19,12 +19,12 @@ class CookieJWTAuthentication(JWTAuthentication):
     """
 
     def authenticate(self, request):
-        # First, try to authenticate using the standard header
+        # First, try to authenticate using the standard header <3
         header_auth = super().authenticate(request)
         if header_auth is not None:
             return header_auth
 
-        # If no header, check the cookie
+        # If no header, check the cookie <3
         raw_token = request.COOKIES.get('access_token')
         if raw_token is None:
             return None
@@ -34,6 +34,6 @@ class CookieJWTAuthentication(JWTAuthentication):
         # But standard Django security practice is to enforce CSRF when using cookies.
         # verify_csrf_token(request) # This would be a helper to check X-CSRFToken header
 
-        # Validate the token
+        # Validate the token <3
         validated_token = self.get_validated_token(raw_token)
         return self.get_user(validated_token), validated_token

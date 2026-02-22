@@ -19,9 +19,6 @@ class User(AbstractUser):
         return self.username
 
 
-
-    
-
 class PasswordResetToken(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=255, unique=True)
@@ -61,16 +58,16 @@ class EmailBackend:
         if username is None or password is None:
             return None
 
-        # Try to find user by email first
+        # Try to find user by email first <3
         try:
             user = User.objects.get(email__iexact=username)
         except User.DoesNotExist:
-            # If not found by email, try username
+            # If not found by email, try username <3
             try:
                 user = User.objects.get(username__iexact=username)
             except User.DoesNotExist:
-                # Run the default password hasher once to reduce timing
-                # difference between an existing and a nonexistent user
+                # Run the default password hasher once to reduce timing <3
+                # difference between an existing and a nonexistent user <3
                 User().set_password(password)
                 return None
 

@@ -83,10 +83,32 @@ class MedicalRecordSerializer(serializers.ModelSerializer):
         return value
 
 class AIResultSerializer(serializers.ModelSerializer):
+    severity = serializers.SerializerMethodField()
+
     class Meta:
         model = AIResult
-        fields = ['id', 'predicted_class', 'confidence_score', 'probabilities', 'created_at']
+        fields = ['id', 'predicted_class', 'confidence_score', 'probabilities', 'created_at', 'description', 'suggestion', 'severity']
         read_only_fields = ['id', 'patient', 'created_at']
+
+    def get_severity(self, obj):
+        if not obj.predicted_class:
+            return "green"
+            
+        predicted_class_lower = obj.predicted_class.lower()
+        if "caries" in predicted_class_lower:
+            return "red"
+        elif "ulcer" in predicted_class_lower:
+            return "yellow"
+        elif "calculus" in predicted_class_lower:
+            return "yellow"
+        elif "gingivitis" in predicted_class_lower:
+            return "yellow"
+        elif "hypodontia" in predicted_class_lower:
+            return "yellow"
+        elif "discoloration" in predicted_class_lower:
+            return "yellow"
+            
+        return "green"
 
 class PatientDoctorRelationshipSerializer(serializers.ModelSerializer):
     class Meta:

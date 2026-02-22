@@ -26,7 +26,59 @@ class AIResult(models.Model):
     predicted_class = models.CharField(max_length=255, null=True)
     confidence_score = models.FloatField(null=True)
     probabilities = models.JSONField(null=True)
+    description = models.TextField(null=True, blank=True)
+    suggestion = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.predicted_class and (not self.description or not self.suggestion):
+            info = self._get_disease_info(self.predicted_class)
+            if not self.description:
+                self.description = info["description"]
+            if not self.suggestion:
+                self.suggestion = info["suggestion"]
+        super().save(*args, **kwargs)
+
+    def _get_disease_info(self, predicted_class):
+        if not predicted_class:
+            return {"description": "", "suggestion": ""}
+            
+        predicted_class_lower = predicted_class.lower()
+        if "caries" in predicted_class_lower:
+            return {
+                "description": "Dental caries (tooth decay or cavities) is a breakdown of teeth due to acids made by bacteria.",
+                "suggestion": "Maintain good oral hygiene, brush twice a day with fluoride toothpaste, and visit a dentist for fillings or further treatment."
+            }
+        elif "ulcer" in predicted_class_lower:
+            return {
+                "description": "Mouth ulcers are painful sores that appear in the mouth. They can be caused by stress, minor injury, or certain foods.",
+                "suggestion": "Avoid spicy or acidic foods. Use over-the-counter topical treatments. If it persists for more than 2 weeks, consult a dentist."
+            }
+        elif "calculus" in predicted_class_lower:
+            return {
+                "description": "Dental calculus (tartar) is hardened dental plaque caused by precipitation of minerals from saliva and gingival crevicular fluid.",
+                "suggestion": "Professional dental cleaning (scaling) is required to remove calculus. Improve daily brushing and flossing habits to prevent buildup."
+            }
+        elif "gingivitis" in predicted_class_lower:
+            return {
+                "description": "Gingivitis is a mild form of gum disease that causes irritation, redness, and swelling of your gingiva.",
+                "suggestion": "Improve your daily oral hygiene routine. Regular brushing, flossing, and professional dental cleanings can reverse gingivitis."
+            }
+        elif "hypodontia" in predicted_class_lower:
+            return {
+                "description": "Hypodontia is an inherited condition characterized by the developmental absence of one or more teeth.",
+                "suggestion": "Consult an orthodontist or prosthodontist for treatment options, which may include braces, dental implants, or bridges."
+            }
+        elif "discoloration" in predicted_class_lower:
+            return {
+                "description": "Tooth discoloration refers to teeth that are not their normal, healthy, white color due to stains, aging, or chemical damage.",
+                "suggestion": "Consider professional teeth whitening, avoid teeth-staining foods and drinks like coffee or tobacco, and maintain good oral hygiene."
+            }
+        return {
+            "description": "No specific description available for this result.", 
+            "suggestion": "Consult your dentist for more information and appropriate treatment."
+        }
+
     def __str__(self):
         return f"AI Result for {self.patient.username}"
 

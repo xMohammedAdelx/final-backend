@@ -8,7 +8,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
-from apps.patient.api.services import get_ai_prediction
+from apps.patient.api.services import get_ai_prediction, save_dental_image
 from apps.patient.models import (
     AIResult,
     PatientProfile,
@@ -283,20 +283,42 @@ class PatientDoctorRelationshipViewSet(viewsets.ModelViewSet):
             )
 class AnalyzeDentalImageView(APIView):
     """
-    Upload a dental image, get AI prediction, and optionally save to AIResult + MedicalRecord.
-    Requires authentication. Saves automatically if the user has a PatientProfile.
+    Upload a dental image, save to uploads, store path in DB, send to AI, and link AIResult.
+    Flow: Save to uploads -> Save path to DB -> Send to AI -> Create AIResult + link.
     """
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         image_file = request.FILES.get('image')
-        save_to_record = request.data.get('save', True)  # Default: save to DB
 
         if not image_file:
             return Response({"error": "No image provided"}, status=status.HTTP_400_BAD_REQUEST)
 
-        ai_prediction = get_ai_prediction(image_file)
+        # 1. Save to uploads
+        saved_path, relative_path = save_dental_image(image_file)
+        image_path_url = f"{settings.UPLOADS_URL.rstrip('/')}/{relative_path}"
+
+        # 2. Save path to DB (MedicalRecord + MedicalAttachment)
+        try:
+            patient_profile = PatientProfile.objects.get(user_id=request.user)
+        except PatientProfile.DoesNotExist:
+            return Response(
+                {"error": "Create a patient profile first to save results."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        medical_record = MedicalRecord.objects.create(
+            patient_id=patient_profile,
+            ai_result=None,
+        )
+        MedicalAttachment.objects.create(
+            medical_record=medical_record,
+            file_path=relative_path,
+            description="Dental analysis image",
+        )
+
+        # 3. Send to AI automatically
+        ai_prediction = get_ai_prediction(saved_path)
 
         if "error" in ai_prediction:
             error_msg = ai_prediction["error"]
@@ -307,39 +329,24 @@ class AnalyzeDentalImageView(APIView):
                 )
             return Response({"error": "AI Model failed to process image"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-        # Extract AI output (matches your AI model: predicted_class, confidence, probabilities)
+        # 4. Link AI result
         predicted_class = ai_prediction.get("predicted_class") or ai_prediction.get("prediction") or ai_prediction.get("diagnosis")
         confidence_score = ai_prediction.get("confidence") or ai_prediction.get("confidence_score")
         probabilities = ai_prediction.get("probabilities") or ai_prediction.get("probs")
+        ai_result = AIResult.objects.create(
+            patient=request.user,
+            predicted_class=predicted_class,
+            confidence_score=confidence_score,
+            probabilities=probabilities,
+        )
+        medical_record.ai_result = ai_result
+        medical_record.save()
 
-        if save_to_record:
-            try:
-                patient_profile = PatientProfile.objects.get(user_id=request.user)
-            except PatientProfile.DoesNotExist:
-                return Response(
-                    {"error": "Create a patient profile first to save results."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            ai_result = AIResult.objects.create(
-                patient=request.user,
-                predicted_class=predicted_class,
-                confidence_score=confidence_score,
-                probabilities=probabilities,
-            )
-            medical_record = MedicalRecord.objects.create(
-                patient_id=patient_profile,
-                ai_result=ai_result,
-            )
-
-            return Response({
-                "message": "Image analyzed and saved successfully",
-                "ai_prediction": ai_prediction,
-                "ai_result_id": ai_result.id,
-                "medical_record_id": medical_record.id,
-            }, status=status.HTTP_201_CREATED)
-
+        # 5. Response
         return Response({
-            "message": "Image analyzed successfully",
+            "message": "Image analyzed and saved successfully",
             "ai_prediction": ai_prediction,
-        }, status=status.HTTP_200_OK)
+            "ai_result_id": ai_result.id,
+            "medical_record_id": medical_record.id,
+            "image_path": image_path_url,
+        }, status=status.HTTP_201_CREATED)

@@ -41,6 +41,7 @@ class MedicalRecord(models.Model):
 class MedicalAttachment(models.Model):
     medical_record = models.ForeignKey(MedicalRecord, on_delete=models.CASCADE, null=True, related_name="attachments")
     file_url = models.URLField(max_length=500, null=True)
+    file_path = models.CharField(max_length=500, null=True, blank=True)
     description = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):

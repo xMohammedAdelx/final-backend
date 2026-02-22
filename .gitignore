@@ -29,6 +29,10 @@ local_settings.py
 db.sqlite3
 media/
 staticfiles/
+
+# Uploaded dental images (keep folder via .gitkeep)
+uploads/dental/*
+!uploads/dental/.gitkeep
 static/
 # If you collect static files locally, ignore collected static:
 # Otherwise, remove this if you commit static files

@@ -180,6 +180,10 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# UPLOADS (dental images, etc.)
+UPLOADS_ROOT = os.path.join(BASE_DIR, 'uploads')
+UPLOADS_URL = '/uploads/'
+
 # CUSTOM USER MODEL <3
 AUTH_USER_MODEL = 'users.User'  
 

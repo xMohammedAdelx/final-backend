@@ -146,9 +146,18 @@ class AppointmentSerializer(serializers.ModelSerializer):
              raise serializers.ValidationError("Appointment notes must be between 2 and 255 characters long.")
          return value    
     def validate_status(self, value):
-         if value and (value not in ["pending", "confirmed", "cancelled"]):
-             raise serializers.ValidationError("Appointment status must be between 2 and 255 characters long.")
+         if value and (value not in ["upcoming", "completed", "cancelled"]):
+             raise serializers.ValidationError("Appointment status must be upcoming or completed or cancelled.")
          return value    
+    def validate_way_of_communication(self, value):
+         if value and (value not in ["Messaging", "Voice Call", "Video Call"]):
+             raise serializers.ValidationError("Appointment way of communication must be Messaging or Voice Call or Video Call.")
+         return value    
+    def validate_duration(self, value):
+         if value and (value <= 0 ):
+             raise serializers.ValidationError("Appointment duration must be a positive integer.")
+         return value
+
 
 class GallerySerializer(serializers.ModelSerializer):
     class Meta:

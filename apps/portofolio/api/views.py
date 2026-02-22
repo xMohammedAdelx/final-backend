@@ -298,8 +298,8 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         filters.SearchFilter,
         filters.OrderingFilter,
     ]
-    search_fields = ["patient", "date", "time"]
-    ordering_fields = ["patient", "date", "time", "created_at"]
+    search_fields = ["patient", "doctor_id", "date", "time","status","way_of_communication"]
+    ordering_fields = ["patient", "doctor_id", "date", "time", "created_at","status"]
 
     permission_classes = [IsAuthenticated, CanAccessAppointment]
 

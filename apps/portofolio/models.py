@@ -49,8 +49,10 @@ class Appointment(models.Model):
     patient = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     date = models.DateField(null=True)
     time = models.TimeField(null=True)
+    duration = models.TimeField(null=True)
     notes = models.TextField(null=True)
     status = models.CharField(max_length=20, null=True)
+    way_of_communication = models.CharField(max_length=20, null=True)
     def __str__(self):
         return self.patient.username if self.patient and self.patient.username else "Appointment"
 

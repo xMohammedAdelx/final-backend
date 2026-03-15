@@ -323,6 +323,9 @@ class AppointmentViewSet(viewsets.ModelViewSet):
             return (patient_appointments | dentist_appointments).distinct()
         return patient_appointments
 
+    def perform_create(self, serializer):
+        serializer.save(patient=self.request.user)
+
     def get_permissions(self):
         #Different permissions for different actions:
         #Patients can create appointments

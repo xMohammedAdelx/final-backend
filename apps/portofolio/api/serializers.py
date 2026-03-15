@@ -136,7 +136,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
     def validate_time(self, value):
         if value is None:
              raise serializers.ValidationError("Time is required.")
-        return value
         if value < timezone.now().time():
              raise serializers.ValidationError("Appointment time must be in the future.")
         return value

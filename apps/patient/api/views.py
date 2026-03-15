@@ -109,12 +109,8 @@ class MedicalRecordViewSet(viewsets.ModelViewSet):
         return patient_records
 
     def get_permissions(self):
-        if self.action in ["create", "update", "partial_update", "destroy"]:
-            # Only doctors and staff can modify medical records
-            permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
-        else:
-            # Anyone authenticated can view (filtered by get_queryset)
-            permission_classes = [permissions.IsAuthenticated, CanAccessMedicalRecord]
+        # CanAccessMedicalRecord handles all authorization logic (view/create/edit)
+        permission_classes = [permissions.IsAuthenticated, CanAccessMedicalRecord]
         return [permission() for permission in permission_classes]
 
     def perform_create(self, serializer):
